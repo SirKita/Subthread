@@ -49,6 +49,10 @@ export async function* streamMessage(
         'x-api-key': params.apiKey,
         'anthropic-version': API_VERSION,
         'content-type': 'application/json',
+        // Required because the service worker sends a chrome-extension:// Origin, which the
+        // API treats as a browser request. Safe here: BYOK — the user's own key, stored only
+        // in chrome.storage.local and sent only to api.anthropic.com.
+        'anthropic-dangerous-direct-browser-access': 'true',
       },
       body: JSON.stringify(body),
       signal: params.signal,

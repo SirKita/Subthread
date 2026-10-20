@@ -78,6 +78,7 @@ describe('streamMessage', () => {
       'x-api-key': 'sk-ant-test',
       'anthropic-version': '2023-06-01',
       'content-type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true',
     });
     expect(JSON.parse(init.body as string)).toEqual({
       model: 'claude-haiku-5-5',
