@@ -1,5 +1,6 @@
 import { defineConfig } from 'wxt';
 import preact from '@preact/preset-vite';
+import { BRAND } from './src/lib/brand';
 
 export default defineConfig({
   srcDir: 'src',
@@ -7,8 +8,8 @@ export default defineConfig({
     plugins: [preact()],
   }),
   manifest: {
-    name: 'side-question',
-    description: 'Ask Claude a side question about any highlighted phrase on claude.ai.',
+    name: BRAND.name,
+    description: BRAND.shortDescription,
     permissions: ['storage'],
     host_permissions: ['https://api.anthropic.com/*'],
     icons: {

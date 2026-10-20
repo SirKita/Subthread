@@ -177,4 +177,25 @@ describe('buildRequest', () => {
     expect(request.messages[1]!.content).toBe('s'.repeat(35));
     expect(request.messages[2]!.content).toBe('current question?');
   });
+
+  it('marks dropped follow-ups at the start of the first kept user message', () => {
+    const dropped = buildRequest(makeCtx(), 'ask', 'current question?', 80, [
+      { question: 'first question, dropped', answer: 'f'.repeat(105) },
+      { question: 'second question, kept', answer: 's'.repeat(35) },
+    ]);
+    expect(dropped.messages[0]!.content.startsWith('[earlier follow-ups omitted]')).toBe(true);
+
+    // Even when every exchange is dropped, the context message carries the marker.
+    const allDropped = buildRequest(makeCtx(), 'ask', 'current question?', 40, [
+      { question: 'only exchange', answer: 'x'.repeat(350) },
+    ]);
+    expect(allDropped.messages).toHaveLength(1);
+    expect(allDropped.messages[0]!.content.startsWith('[earlier follow-ups omitted]')).toBe(true);
+
+    // No marker when nothing was dropped.
+    const kept = buildRequest(makeCtx(), 'ask', 'current question?', 8000, [
+      { question: 'kept question', answer: 'kept answer' },
+    ]);
+    expect(kept.messages[0]!.content).not.toContain('[earlier follow-ups omitted]');
+  });
 });

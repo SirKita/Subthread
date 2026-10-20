@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
+import { BRAND } from '../../lib/brand';
 import { sendTestConnection } from '../../lib/messaging/protocol';
 import { DEFAULT_SETTINGS, getSettings, setSettings } from '../../lib/storage/settings';
 
@@ -47,7 +48,7 @@ export function App() {
 
   return (
     <main class="settings">
-      <h1>side-question</h1>
+      <h1>{BRAND.name}</h1>
       <p class="hint">
         Answers use your own Anthropic API key. It is stored locally and read only by this
         extension&apos;s background worker.{' '}

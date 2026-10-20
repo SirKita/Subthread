@@ -110,6 +110,14 @@ export function buildRequest(
     messages.push({ role: 'user', content: question ?? '' });
   }
 
+  // Tell the model when budget trimming dropped older follow-up exchanges.
+  if (fitted.sideThread.length < sideThread.length) {
+    messages[0] = {
+      ...messages[0]!,
+      content: `[earlier follow-ups omitted]\n\n${messages[0]!.content}`,
+    };
+  }
+
   return {
     system: buildSystemPrompt(sideThread.length > 0 ? 'ask' : mode),
     messages,
