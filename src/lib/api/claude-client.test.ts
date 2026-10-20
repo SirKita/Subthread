@@ -112,15 +112,27 @@ describe('streamMessage', () => {
       },
       {
         event: 'content_block_start',
-        data: { type: 'content_block_start', index: 0, content_block: { type: 'thinking', thinking: '' } },
+        data: {
+          type: 'content_block_start',
+          index: 0,
+          content_block: { type: 'thinking', thinking: '' },
+        },
       },
       {
         event: 'content_block_delta',
-        data: { type: 'content_block_delta', index: 0, delta: { type: 'thinking_delta', thinking: 'hmm…' } },
+        data: {
+          type: 'content_block_delta',
+          index: 0,
+          delta: { type: 'thinking_delta', thinking: 'hmm…' },
+        },
       },
       {
         event: 'content_block_delta',
-        data: { type: 'content_block_delta', index: 0, delta: { type: 'signature_delta', signature: 'sig==' } },
+        data: {
+          type: 'content_block_delta',
+          index: 0,
+          delta: { type: 'signature_delta', signature: 'sig==' },
+        },
       },
       { event: 'content_block_stop', data: { type: 'content_block_stop', index: 0 } },
       {
@@ -129,12 +141,20 @@ describe('streamMessage', () => {
       },
       {
         event: 'content_block_delta',
-        data: { type: 'content_block_delta', index: 1, delta: { type: 'text_delta', text: 'Answer.' } },
+        data: {
+          type: 'content_block_delta',
+          index: 1,
+          delta: { type: 'text_delta', text: 'Answer.' },
+        },
       },
       { event: 'content_block_stop', data: { type: 'content_block_stop', index: 1 } },
       {
         event: 'message_delta',
-        data: { type: 'message_delta', delta: { stop_reason: 'end_turn' }, usage: { output_tokens: 11 } },
+        data: {
+          type: 'message_delta',
+          delta: { stop_reason: 'end_turn' },
+          usage: { output_tokens: 11 },
+        },
       },
       { event: 'message_stop', data: { type: 'message_stop' } },
     ];

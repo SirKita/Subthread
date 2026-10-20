@@ -1,30 +1,67 @@
-import { defineContentScript } from 'wxt/utils/define-content-script';
+import { h, render } from 'preact';
 import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
+import { defineContentScript } from 'wxt/utils/define-content-script';
+import { describeAncestry } from '../lib/context/dump';
+import { App } from '../ui/App';
+import '../ui/styles.css';
+
+const DEBUG = false;
 
 export default defineContentScript({
   matches: ['https://claude.ai/*'],
   cssInjectionMode: 'ui',
 
   async main(ctx) {
-    console.log('[side-question] content script loaded');
+    if (DEBUG) {
+      console.log('[side-question] content script loaded');
+      let debounce: number | undefined;
+      document.addEventListener('selectionchange', () => {
+        window.clearTimeout(debounce);
+        debounce = window.setTimeout(() => {
+          // Log only the LENGTH — never the selected text itself.
+          console.log('[side-question] selection length:', selectionLength());
+        }, 150);
+      });
+    }
 
-    let debounce: number | undefined;
-    document.addEventListener('selectionchange', () => {
-      window.clearTimeout(debounce);
-      debounce = window.setTimeout(() => {
-        // Log only the LENGTH — never the selected text itself.
-        const length = window.getSelection()?.toString().length ?? 0;
-        console.log('[side-question] selection length:', length);
-      }, 150);
-    });
+    // Dev helper: Ctrl+Shift+D / Cmd+Shift+D dumps the DOM structure around the selection.
+    document.addEventListener('keydown', onDumpHotkey, true);
 
-    // Empty shadow-root mount; Phase 1 renders the mini-toolbar here.
     const ui = await createShadowRootUi(ctx, {
       name: 'side-question-ui',
-      position: 'inline',
+      position: 'overlay',
       anchor: 'body',
-      onMount: () => {},
+      zIndex: 2147483646,
+      onMount: (container) => {
+        render(h(App, {}), container);
+        return container;
+      },
+      onRemove: (container) => {
+        if (container) render(null, container);
+      },
     });
     ui.mount();
   },
 });
+
+function selectionLength(): number {
+  return window.getSelection()?.toString().length ?? 0;
+}
+
+function onDumpHotkey(event: KeyboardEvent): void {
+  if (!(event.ctrlKey || event.metaKey) || !event.shiftKey || event.key.toLowerCase() !== 'd') {
+    return;
+  }
+  const selection = window.getSelection();
+  if (!selection || selection.isCollapsed || selection.rangeCount === 0) return;
+  event.preventDefault();
+
+  const node = selection.getRangeAt(0).commonAncestorContainer;
+  const element = node instanceof Element ? node : node.parentElement;
+  if (!element) return;
+
+  // describeAncestry never includes text content — structure and lengths only.
+  const dump = { ...describeAncestry(element), selectionLength: selection.toString().length };
+  console.log('[side-question] DOM structure dump', dump);
+  void navigator.clipboard.writeText(JSON.stringify(dump, null, 2)).catch(() => {});
+}
