@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Mode } from '../lib/api/prompts';
 import type { ExtractedContext } from '../lib/context/adapter';
 import { claudeAiAdapter } from '../lib/context/claude-ai';
+import { isOwnUiEvent } from './dom';
 import { Popover } from './Popover';
 import { Toolbar } from './Toolbar';
 import type { AnchorRect } from './types';
 import { snapshotRect } from './types';
 
-// WXT shadow host element name — events from inside the shadow root retarget to it.
-const HOST_TAG = 'side-question-ui';
 const SELECTION_DEBOUNCE_MS = 100;
 
 interface ToolbarState {
@@ -21,10 +20,6 @@ interface PopoverState {
   mode: Mode;
   ctx: ExtractedContext;
   rect: AnchorRect;
-}
-
-function isOwnUi(target: EventTarget | null): boolean {
-  return target instanceof Element && target.closest(HOST_TAG) != null;
 }
 
 export function App() {
@@ -52,7 +47,7 @@ export function App() {
     };
 
     const onMouseUp = (event: MouseEvent) => {
-      if (isOwnUi(event.target)) return;
+      if (isOwnUiEvent(event)) return;
       window.clearTimeout(debounce);
       debounce = window.setTimeout(showToolbarForSelection, SELECTION_DEBOUNCE_MS);
     };
@@ -63,7 +58,7 @@ export function App() {
     };
 
     const onMouseDown = (event: MouseEvent) => {
-      if (isOwnUi(event.target)) return;
+      if (isOwnUiEvent(event)) return;
       // Click outside: hide the toolbar and close any popover.
       setToolbar(null);
       setPopover(null);

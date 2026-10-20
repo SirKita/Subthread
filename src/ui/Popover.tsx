@@ -5,6 +5,8 @@ import type { ExtractedContext } from '../lib/context/adapter';
 import { streamAsk } from '../lib/messaging/port';
 import type { ErrorMessage } from '../lib/messaging/protocol';
 import { sendGetConfig, sendOpenOptions } from '../lib/messaging/protocol';
+import { isEditableTarget } from './dom';
+import { installKeyboardGuard } from './keyboard-guard';
 import type { AnchorRect } from './types';
 
 const MARGIN = 12;
@@ -24,11 +26,11 @@ interface Props {
 
 export function Popover({ mode, ctx, rect, onClose }: Props) {
   const [status, setStatus] = useState<Status>(mode === 'ask' ? 'input' : 'waiting');
-  const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [error, setError] = useState<StreamError | null>(null);
   const abortRef = useRef<(() => void) | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [, bumpReposition] = useState(0);
 
   const start = useCallback(
@@ -72,8 +74,30 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
   }, []);
 
   useEffect(() => {
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   }, [status]);
+
+  // The window-capture keyboard guard stops events before they reach our input,
+  // so the input is uncontrolled and Enter/Escape are handled here via refs
+  // (the guard is installed once; refs keep the handlers current).
+  const submitQuestion = () => {
+    const value = inputRef.current?.value.trim();
+    if (value && status === 'input') void start(value);
+  };
+  const submitRef = useRef(submitQuestion);
+  submitRef.current = submitQuestion;
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+
+  useEffect(() => {
+    const root = containerRef.current?.getRootNode();
+    const host = root instanceof ShadowRoot ? (root.host as HTMLElement) : null;
+    if (!host) return;
+    return installKeyboardGuard(host, {
+      onEnter: () => submitRef.current(),
+      onEscape: () => closeRef.current(),
+    });
+  }, []);
 
   useEffect(() => {
     const onResize = () => bumpReposition((n) => n + 1);
@@ -85,10 +109,6 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
     abortRef.current?.();
     abortRef.current = null;
     setStatus('done');
-  };
-
-  const submitQuestion = () => {
-    if (question.trim()) void start(question);
   };
 
   // --- positioning: fixed, near the selection, clamped to the viewport ---
@@ -110,11 +130,12 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
 
   return (
     <div
+      ref={containerRef}
       class="sq-popover"
       style={style}
-      // Keep the page selection alive, but let the Ask input take focus.
+      // Keep the page selection alive, but never block focus on editable targets.
       onMouseDown={(e) => {
-        if (!(e.target instanceof HTMLInputElement)) e.preventDefault();
+        if (!isEditableTarget(e)) e.preventDefault();
       }}
     >
       <header class="sq-header">
@@ -128,17 +149,10 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
 
       <div class="sq-body">
         {status === 'input' && (
-          <input
-            ref={inputRef}
-            class="sq-question"
-            type="text"
-            placeholder="Ask about this…"
-            value={question}
-            onInput={(e) => setQuestion(e.currentTarget.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') submitQuestion();
-            }}
-          />
+          // Uncontrolled on purpose: the keyboard guard stops key/input events
+          // at window capture, so onInput/onKeyDown here would never fire.
+          // Enter is handled by the guard; the value is read from the ref.
+          <input ref={inputRef} class="sq-question" type="text" placeholder="Ask about this…" />
         )}
 
         {status === 'waiting' && <div class="sq-pending">…</div>}

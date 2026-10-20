@@ -1,3 +1,4 @@
+import { isEditableTarget } from './dom';
 import type { AnchorRect } from './types';
 
 const HEIGHT = 36;
@@ -24,7 +25,10 @@ export function Toolbar({ rect, onExplain, onAsk }: Props) {
       class="sq-toolbar"
       style={{ top: `${top}px`, left: `${left}px` }}
       // Keep the page selection alive: without this, mousedown clears it.
-      onMouseDown={(e) => e.preventDefault()}
+      // (Never blocks editable targets; the toolbar has none, but keep the audit rule.)
+      onMouseDown={(e) => {
+        if (!isEditableTarget(e)) e.preventDefault();
+      }}
     >
       <button type="button" onClick={onExplain}>
         Explain

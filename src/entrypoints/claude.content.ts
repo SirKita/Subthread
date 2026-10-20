@@ -3,6 +3,7 @@ import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { describeAncestry } from '../lib/context/dump';
 import { App } from '../ui/App';
+import { HOST_TAG } from '../ui/dom';
 import '../ui/styles.css';
 
 const DEBUG = false;
@@ -28,7 +29,7 @@ export default defineContentScript({
     document.addEventListener('keydown', onDumpHotkey, true);
 
     const ui = await createShadowRootUi(ctx, {
-      name: 'side-question-ui',
+      name: HOST_TAG,
       position: 'overlay',
       anchor: 'body',
       zIndex: 2147483646,
