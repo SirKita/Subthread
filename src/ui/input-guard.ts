@@ -1,5 +1,5 @@
-// Diagnostic build: set to false once the composer-steals-keystrokes issue is confirmed fixed.
-const DEBUG = true;
+// Flip to true to diagnose focus/keystroke routing (logs every guarded event type).
+const DEBUG = false;
 
 const GUARDED_EVENTS = [
   'keydown',

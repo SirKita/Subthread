@@ -1,0 +1,2184 @@
+{
+  "url": "/chat/5a1cd48b-2932-4346-a285-e975a5744da6",
+  "selectionLength": 33,
+  "ancestors": [
+    {
+      "depth": 0,
+      "tag": "p",
+      "id": "",
+      "classes": [],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 0,
+      "textLength": 256
+    },
+    {
+      "depth": 1,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "_blocks_4za3l_47",
+        "standard-markdown",
+        "grid-cols-1",
+        "grid",
+        "[&_>_*]:min-w-0",
+        "whitespace-normal",
+        "break-words",
+        "print:block"
+      ],
+      "dataAttrs": {
+        "data-perf-reply-text": ""
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 22,
+      "textLength": 3458
+    },
+    {
+      "depth": 2,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "prose"
+      ],
+      "dataAttrs": {
+        "data-cds": "Prose",
+        "data-size": "sm"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 3458
+    },
+    {
+      "depth": 3,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "contents"
+      ],
+      "dataAttrs": {
+        "data-transcript-engine-root": ""
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 3458
+    },
+    {
+      "depth": 4,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "flex",
+        "min-w-0",
+        "flex-col",
+        "gap-5",
+        "compact:gap-4",
+        "print:block",
+        "print:[&>:where(:not(:first-child))]:mt-5",
+        "compact:print:[&>:where(:not(:first-child))]:mt-4"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 3571
+    },
+    {
+      "depth": 5,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "group/message-row",
+        "relative",
+        "flex",
+        "w-full",
+        "min-w-0",
+        "flex-col",
+        "gap-xs",
+        "break-words",
+        "select-text",
+        "print:block"
+      ],
+      "dataAttrs": {
+        "data-cds": "AssistantMessage",
+        "data-testid": "assistant-message",
+        "data-turn-key": "e2962d39-ef00-462f-9b28-b1bdf0e40119-hub-reply",
+        "data-is-streaming": "false"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 3,
+      "textLength": 3681
+    },
+    {
+      "depth": 6,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "group",
+        "group/message-row",
+        "min-w-0"
+      ],
+      "dataAttrs": {
+        "data-reply-scope": ""
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 3681
+    },
+    {
+      "depth": 7,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "mt-xs",
+        "[&>[data-turn-key]]:!my-0",
+        "[&>[data-reply-scope]>[data-turn-key]]:!my-0",
+        "[&:has(>[data-reserves-actions-gap]:not(:empty))]:pb-md",
+        "[&:has(>[data-reply-scope]>[data-reserves-actions-gap]:not(:empty))]:pb-md"
+      ],
+      "dataAttrs": {
+        "data-transcript-row": ""
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 3681
+    },
+    {
+      "depth": 8,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "contents"
+      ],
+      "dataAttrs": {
+        "data-mini-claude-message": "_r_8d_"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 3681
+    },
+    {
+      "depth": 9,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "rounded-lg",
+        "focus-visible:shadow-focus",
+        "focus-visible:outline-hidden"
+      ],
+      "dataAttrs": {},
+      "role": "article",
+      "ariaLabel": "Message 32 of 32",
+      "childElementCount": 1,
+      "textLength": 3681
+    },
+    {
+      "depth": 10,
+      "tag": "div",
+      "id": "",
+      "classes": [],
+      "dataAttrs": {
+        "data-rs-index": "31",
+        "data-index": "31",
+        "data-testid": "transcript-row",
+        "data-last-message": "true",
+        "data-perf-row": "assistant",
+        "data-perf-row-from-tail": "0",
+        "data-perf-row-streaming": "false"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 3681
+    },
+    {
+      "depth": 11,
+      "tag": "div",
+      "id": "",
+      "classes": [],
+      "dataAttrs": {
+        "data-sizer-excess": "0",
+        "data-rocksteady-sizer": "",
+        "data-testid": "transcript-sizer"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 7,
+      "textLength": 7589
+    },
+    {
+      "depth": 12,
+      "tag": "div",
+      "id": "",
+      "classes": [],
+      "dataAttrs": {
+        "data-perf-region": "transcript",
+        "data-find-provider-scope": ""
+      },
+      "role": "feed",
+      "ariaLabel": "Chat messages",
+      "childElementCount": 2,
+      "textLength": 7645
+    },
+    {
+      "depth": 13,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "cds-root",
+        "text-primary",
+        "contents"
+      ],
+      "dataAttrs": {
+        "data-density": "comfortable",
+        "data-mode": "dark",
+        "data-platform": "web",
+        "data-font": "anthropic",
+        "data-page-bg": "surface-1"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 3,
+      "textLength": 7645
+    },
+    {
+      "depth": 14,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "mx-auto",
+        "flex",
+        "w-full",
+        "max-w-[var(--transcript-width,48rem)]",
+        "flex-1",
+        "flex-col",
+        "px-5",
+        "md:px-[var(--chat-list-inset,1rem)]",
+        "max-md:[--widget-bleed-end:calc(1.25rem_+_var(--df-ceded-gutter,0px))]",
+        "max-md:[--widget-bleed-start:calc(1.25rem_+_var(--msg-block-inset,0.5rem)_+_var(--df-ceded-gutter,0px))]",
+        "max-md:[--widget-edge-fade:0px]",
+        "blank-strip-alone",
+        "blank-strip-after-empty-stack",
+        "blank-strip-shown-while-stack-lists",
+        "pt-1"
+      ],
+      "dataAttrs": {
+        "data-testid": "transcript-list"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 5,
+      "textLength": 7645
+    },
+    {
+      "depth": 15,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "mx-auto",
+        "flex",
+        "w-full",
+        "flex-1",
+        "flex-col",
+        "max-w-[calc(var(--transcript-width,48rem)_+_2.5rem)]",
+        "md:px-5",
+        "max-md:[--msg-inset-end:0px]",
+        "[--msg-text-inset:0.25rem]",
+        "[--msg-block-inset:0px]",
+        "hub-block-radius"
+      ],
+      "dataAttrs": {
+        "data-testid": "chat-column",
+        "data-transcript-stays-put-scope": "",
+        "data-scrolls-behind-title-row": ""
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 4,
+      "textLength": 7844
+    },
+    {
+      "depth": 16,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "relative",
+        "w-full",
+        "min-h-full",
+        "flex",
+        "flex-col",
+        "px-[var(--df-ceded-gutter,0px)]"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 7844
+    },
+    {
+      "depth": 17,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "overflow-y-auto",
+        "overflow-x-hidden",
+        "[scrollbar-gutter:stable]",
+        "scroll-pt-frame-row",
+        "pt-[calc(var(--frame-row-h,3rem)+0.5rem)]",
+        "flex-1",
+        "me-[var(--chat-body-end-inset,0px)]",
+        "print:!me-0",
+        "print:!overflow-visible",
+        "print:!h-auto"
+      ],
+      "dataAttrs": {
+        "data-autoscroll-container": "true"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 7844
+    },
+    {
+      "depth": 18,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "flex",
+        "min-h-0",
+        "flex-1",
+        "flex-col",
+        "data-[chat-hidden]:hidden",
+        "print:!flex",
+        "cds-root",
+        "text-primary"
+      ],
+      "dataAttrs": {
+        "data-testid": "chat-column-body",
+        "data-density": "comfortable",
+        "data-mode": "dark",
+        "data-platform": "web",
+        "data-font": "anthropic",
+        "data-page-bg": "surface-1"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 7844
+    },
+    {
+      "depth": 19,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "flex",
+        "flex-col",
+        "overflow-hidden",
+        "h-full",
+        "relative",
+        "print:h-auto",
+        "print:overflow-visible",
+        "print:!flex-auto"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 7894
+    },
+    {
+      "depth": 20,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "flex",
+        "flex-1",
+        "w-full",
+        "relative",
+        "h-full",
+        "overflow-clip",
+        "[overflow-clip-margin:8px]",
+        "print:!h-auto",
+        "print:!overflow-visible",
+        "print:!mt-0"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 4,
+      "textLength": 7894
+    },
+    {
+      "depth": 21,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "contents"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 7894
+    },
+    {
+      "depth": 22,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "contents"
+      ],
+      "dataAttrs": {
+        "data-plugin-pane-row": "bare"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 7894
+    },
+    {
+      "depth": 23,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "contents"
+      ],
+      "dataAttrs": {
+        "data-plugin-pane-frame": ""
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 7894
+    },
+    {
+      "depth": 24,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "relative",
+        "flex",
+        "h-full",
+        "min-w-0",
+        "flex-1",
+        "flex-col"
+      ],
+      "dataAttrs": {
+        "data-testid": "bardhub-claudechat-root",
+        "data-conv-id": "5a1cd48b-2932-4346-a285-e975a5744da6",
+        "data-hub-gen": "1",
+        "data-hub-ready": "1",
+        "data-hub-awaiting-creation": "0",
+        "data-hub-draft": "0"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 5,
+      "textLength": 7894
+    },
+    {
+      "depth": 25,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "relative",
+        "flex",
+        "h-full",
+        "flex-row"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 8253
+    },
+    {
+      "depth": 26,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "peer",
+        "h-full",
+        "empty:hidden"
+      ],
+      "dataAttrs": {
+        "data-testid": "chat-hub-host-slot"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 8253
+    },
+    {
+      "depth": 27,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "h-full"
+      ],
+      "dataAttrs": {
+        "data-testid": "chat-stale-nav-body"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 8260
+    },
+    {
+      "depth": 28,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "relative",
+        "h-full"
+      ],
+      "dataAttrs": {
+        "data-testid": "chat-stale-nav-frame"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 5,
+      "textLength": 8260
+    },
+    {
+      "depth": 29,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "relative",
+        "flex-1",
+        "min-h-0",
+        "flex",
+        "flex-col"
+      ],
+      "dataAttrs": {
+        "data-route-outlet": ""
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 8260
+    },
+    {
+      "depth": 30,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "dframe-pane-scroller",
+        "flex-1",
+        "min-h-0",
+        "flex",
+        "flex-col",
+        "overflow-x-clip",
+        "overflow-y-auto",
+        "-ms-2",
+        "ps-2"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 8260
+    },
+    {
+      "depth": 31,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "dframe-pane",
+        "dframe-pane-primary",
+        "flex-1",
+        "min-w-0",
+        "relative",
+        "flex",
+        "flex-col"
+      ],
+      "dataAttrs": {
+        "data-col-last": "true"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 8260
+    },
+    {
+      "depth": 32,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "dframe-content-inner"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 8260
+    },
+    {
+      "depth": 33,
+      "tag": "main",
+      "id": "",
+      "classes": [
+        "dframe-content"
+      ],
+      "dataAttrs": {
+        "data-perf-region": "main"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 8260
+    },
+    {
+      "depth": 34,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "dframe-root",
+        "draggable-none",
+        "cds-root",
+        "text-primary"
+      ],
+      "dataAttrs": {
+        "data-web": "true",
+        "data-variant": "web",
+        "data-sidebar-density": "comfortable",
+        "data-density": "comfortable",
+        "data-mode": "dark",
+        "data-platform": "web",
+        "data-font": "anthropic",
+        "data-page-bg": "surface-1",
+        "data-frame-mode": "cowork"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 9341
+    },
+    {
+      "depth": 35,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "flex",
+        "min-h-0",
+        "min-w-0",
+        "w-full",
+        "overflow-x-clip",
+        "relative",
+        "overflow-y-clip",
+        "print:!overflow-visible"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 9341
+    },
+    {
+      "depth": 36,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "grid",
+        "w-full",
+        "overflow-hidden",
+        "print:!h-auto",
+        "print:overflow-visible",
+        "print:block"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 9341
+    },
+    {
+      "depth": 37,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "root"
+      ],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 9341
+    },
+    {
+      "depth": 38,
+      "tag": "div",
+      "id": "",
+      "classes": [
+        "cds-root",
+        "text-primary",
+        "contents"
+      ],
+      "dataAttrs": {
+        "data-density": "comfortable",
+        "data-mode": "dark",
+        "data-platform": "web",
+        "data-font": "anthropic",
+        "data-page-bg": "surface-1"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 1,
+      "textLength": 9341
+    },
+    {
+      "depth": 39,
+      "tag": "div",
+      "id": "root",
+      "classes": [],
+      "dataAttrs": {},
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 2,
+      "textLength": 9341
+    },
+    {
+      "depth": 40,
+      "tag": "body",
+      "id": "",
+      "classes": [
+        "bg-surface-1",
+        "text-primary",
+        "font-sans",
+        "min-h-screen",
+        "chat-ui-core"
+      ],
+      "dataAttrs": {
+        "data-new-gr-c-s-check-loaded": "14.1338.0",
+        "data-gr-ext-installed": "",
+        "data-gr-agent-presence-bridge-connection-id": "1792535885997-0.1320982344517696",
+        "data-new-gr-c-s-loaded": "14.1338.0"
+      },
+      "role": "",
+      "ariaLabel": "",
+      "childElementCount": 26,
+      "textLength": 50914
+    }
+  ],
+  "siblingsAtEachDepth": [
+    {
+      "depth": 0,
+      "count": 22,
+      "sample": [
+        {
+          "tag": "p",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 75
+        },
+        {
+          "tag": "h3",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 35
+        },
+        {
+          "tag": "p",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 99
+        },
+        {
+          "tag": "ol",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 354
+        },
+        {
+          "tag": "p",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 80
+        },
+        {
+          "tag": "h3",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 38
+        },
+        {
+          "tag": "p",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 114
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-not-prose": ""
+          },
+          "textLength": 23
+        }
+      ]
+    },
+    {
+      "depth": 1,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "_blocks_4za3l_47",
+            "standard-markdown",
+            "grid-cols-1",
+            "grid",
+            "[&_>_*]:min-w-0",
+            "whitespace-normal",
+            "break-words",
+            "print:block"
+          ],
+          "dataAttrs": {
+            "data-perf-reply-text": ""
+          },
+          "textLength": 3458
+        }
+      ]
+    },
+    {
+      "depth": 2,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "prose"
+          ],
+          "dataAttrs": {
+            "data-cds": "Prose",
+            "data-size": "sm"
+          },
+          "textLength": 3458
+        }
+      ]
+    },
+    {
+      "depth": 3,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "group/status",
+            "flex",
+            "w-full",
+            "min-w-0",
+            "flex-col",
+            "-my-pad-xs"
+          ],
+          "dataAttrs": {
+            "data-closed": "",
+            "data-cds": "TurnStatus",
+            "data-item-key": "e2962d39-ef00-462f-9b28-b1bdf0e40119-hub-reply:grp:th0",
+            "data-find-omitted": "",
+            "data-state": "done"
+          },
+          "textLength": 113
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-transcript-engine-root": ""
+          },
+          "textLength": 3458
+        }
+      ]
+    },
+    {
+      "depth": 4,
+      "count": 3,
+      "sample": [
+        {
+          "tag": "h2",
+          "classes": [
+            "sr-only",
+            "select-none"
+          ],
+          "dataAttrs": {
+            "data-find-omitted": ""
+          },
+          "textLength": 93
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "flex",
+            "min-w-0",
+            "flex-col",
+            "gap-5",
+            "compact:gap-4",
+            "print:block",
+            "print:[&>:where(:not(:first-child))]:mt-5",
+            "compact:print:[&>:where(:not(:first-child))]:mt-4"
+          ],
+          "dataAttrs": {},
+          "textLength": 3571
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "ms-[calc(var(--cds-assistant-message-text-inset,0px)_-_6px)]",
+            "print:mt-xs"
+          ],
+          "dataAttrs": {},
+          "textLength": 17
+        }
+      ]
+    },
+    {
+      "depth": 5,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "group/message-row",
+            "relative",
+            "flex",
+            "w-full",
+            "min-w-0",
+            "flex-col",
+            "gap-xs",
+            "break-words",
+            "select-text",
+            "print:block"
+          ],
+          "dataAttrs": {
+            "data-cds": "AssistantMessage",
+            "data-testid": "assistant-message",
+            "data-turn-key": "e2962d39-ef00-462f-9b28-b1bdf0e40119-hub-reply",
+            "data-is-streaming": "false"
+          },
+          "textLength": 3681
+        }
+      ]
+    },
+    {
+      "depth": 6,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "group",
+            "group/message-row",
+            "min-w-0"
+          ],
+          "dataAttrs": {
+            "data-reply-scope": ""
+          },
+          "textLength": 3681
+        }
+      ]
+    },
+    {
+      "depth": 7,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "mt-xs",
+            "[&>[data-turn-key]]:!my-0",
+            "[&>[data-reply-scope]>[data-turn-key]]:!my-0",
+            "[&:has(>[data-reserves-actions-gap]:not(:empty))]:pb-md",
+            "[&:has(>[data-reply-scope]>[data-reserves-actions-gap]:not(:empty))]:pb-md"
+          ],
+          "dataAttrs": {
+            "data-transcript-row": ""
+          },
+          "textLength": 3681
+        }
+      ]
+    },
+    {
+      "depth": 8,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-mini-claude-message": "_r_8d_"
+          },
+          "textLength": 3681
+        }
+      ]
+    },
+    {
+      "depth": 9,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "rounded-lg",
+            "focus-visible:shadow-focus",
+            "focus-visible:outline-hidden"
+          ],
+          "dataAttrs": {},
+          "textLength": 3681
+        }
+      ]
+    },
+    {
+      "depth": 10,
+      "count": 7,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-testid": "transcript-leading",
+            "data-transcript-not-rows": ""
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "button",
+          "classes": [
+            "sr-only",
+            "select-none"
+          ],
+          "dataAttrs": {},
+          "textLength": 21
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-testid": "transcript-spacer"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-rs-index": "29",
+            "data-index": "29",
+            "data-testid": "transcript-row",
+            "data-perf-row": "assistant",
+            "data-perf-row-from-tail": "2",
+            "data-perf-row-streaming": "false"
+          },
+          "textLength": 3773
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-rs-index": "30",
+            "data-index": "30",
+            "data-testid": "transcript-row",
+            "data-perf-row": "human",
+            "data-perf-row-from-tail": "1",
+            "data-perf-row-streaming": "false"
+          },
+          "textLength": 114
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-rs-index": "31",
+            "data-index": "31",
+            "data-testid": "transcript-row",
+            "data-last-message": "true",
+            "data-perf-row": "assistant",
+            "data-perf-row-from-tail": "0",
+            "data-perf-row-streaming": "false"
+          },
+          "textLength": 3681
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-testid": "transcript-spacer"
+          },
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 11,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "p",
+          "classes": [
+            "sr-only",
+            "select-none"
+          ],
+          "dataAttrs": {},
+          "textLength": 56
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-sizer-excess": "0",
+            "data-rocksteady-sizer": "",
+            "data-testid": "transcript-sizer"
+          },
+          "textLength": 7589
+        }
+      ]
+    },
+    {
+      "depth": 12,
+      "count": 3,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-perf-region": "transcript",
+            "data-find-provider-scope": ""
+          },
+          "textLength": 7645
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-testid": "transcript-trailing"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {
+            "data-testid": "transcript-end"
+          },
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 13,
+      "count": 5,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "cds-root",
+            "text-primary",
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-density": "comfortable",
+            "data-mode": "dark",
+            "data-platform": "web",
+            "data-font": "anthropic",
+            "data-page-bg": "surface-1"
+          },
+          "textLength": 7645
+        },
+        {
+          "tag": "span",
+          "classes": [],
+          "dataAttrs": {
+            "data-mini-claude-scope": "_r_8d_"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "h-px",
+            "w-full",
+            "pointer-events-none"
+          ],
+          "dataAttrs": {
+            "data-testid": "last-message-sentinel"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "h-12"
+          ],
+          "dataAttrs": {},
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "grow",
+            "print:hidden"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-extra-space",
+            "data-transcript-elastic-room": ""
+          },
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 14,
+      "count": 4,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "mx-auto",
+            "flex",
+            "w-full",
+            "max-w-[var(--transcript-width,48rem)]",
+            "flex-1",
+            "flex-col",
+            "px-5",
+            "md:px-[var(--chat-list-inset,1rem)]",
+            "max-md:[--widget-bleed-end:calc(1.25rem_+_var(--df-ceded-gutter,0px))]",
+            "max-md:[--widget-bleed-start:calc(1.25rem_+_var(--msg-block-inset,0.5rem)_+_var(--df-ceded-gutter,0px))]",
+            "max-md:[--widget-edge-fade:0px]",
+            "blank-strip-alone",
+            "blank-strip-after-empty-stack",
+            "blank-strip-shown-while-stack-lists",
+            "pt-1"
+          ],
+          "dataAttrs": {
+            "data-testid": "transcript-list"
+          },
+          "textLength": 7645
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "print:hidden",
+            "[--composer-banners-h:calc(var(--composer-banners-host-h,0px)_+_var(--composer-banners-composer-h,0px))]",
+            "h-[max(0px,calc(var(--composer-banners-h,0px)_-_var(--composer-banners-clear,0px)))]"
+          ],
+          "dataAttrs": {
+            "data-composer-banners-room": ""
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "span",
+          "classes": [],
+          "dataAttrs": {
+            "data-chat-dock-kind": "composer",
+            "data-chat-transcript-phase": "rows"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "sticky",
+            "bottom-0",
+            "mx-auto",
+            "w-full",
+            "print:hidden",
+            "pt-6",
+            "pointer-events-none",
+            "z-[5]",
+            "[--composer-banners-h:calc(var(--composer-banners-host-h,0px)_+_var(--composer-banners-composer-h,0px))]"
+          ],
+          "dataAttrs": {
+            "data-chat-input-container": "true"
+          },
+          "textLength": 199
+        }
+      ]
+    },
+    {
+      "depth": 15,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "mx-auto",
+            "flex",
+            "w-full",
+            "flex-1",
+            "flex-col",
+            "max-w-[calc(var(--transcript-width,48rem)_+_2.5rem)]",
+            "md:px-5",
+            "max-md:[--msg-inset-end:0px]",
+            "[--msg-text-inset:0.25rem]",
+            "[--msg-block-inset:0px]",
+            "hub-block-radius"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-column",
+            "data-transcript-stays-put-scope": "",
+            "data-scrolls-behind-title-row": ""
+          },
+          "textLength": 7844
+        }
+      ]
+    },
+    {
+      "depth": 16,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "relative",
+            "w-full",
+            "min-h-full",
+            "flex",
+            "flex-col",
+            "px-[var(--df-ceded-gutter,0px)]"
+          ],
+          "dataAttrs": {},
+          "textLength": 7844
+        }
+      ]
+    },
+    {
+      "depth": 17,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "overflow-y-auto",
+            "overflow-x-hidden",
+            "[scrollbar-gutter:stable]",
+            "scroll-pt-frame-row",
+            "pt-[calc(var(--frame-row-h,3rem)+0.5rem)]",
+            "flex-1",
+            "me-[var(--chat-body-end-inset,0px)]",
+            "print:!me-0",
+            "print:!overflow-visible",
+            "print:!h-auto"
+          ],
+          "dataAttrs": {
+            "data-autoscroll-container": "true"
+          },
+          "textLength": 7844
+        }
+      ]
+    },
+    {
+      "depth": 18,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "dframe-header",
+            "group/title-row",
+            "absolute",
+            "inset-x-0",
+            "top-0",
+            "flex",
+            "h-frame-row",
+            "items-center",
+            "ps-[calc(var(--df-header-start-inset,1rem)_+_var(--df-ceded-gutter,0px))]",
+            "gap-2",
+            "pe-[var(--df-pane-trailing-gutter,8px)]",
+            "pointer-events-none"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-header",
+            "data-owns-header-title-row": ""
+          },
+          "textLength": 50
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "flex",
+            "min-h-0",
+            "flex-1",
+            "flex-col",
+            "data-[chat-hidden]:hidden",
+            "print:!flex",
+            "cds-root",
+            "text-primary"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-column-body",
+            "data-density": "comfortable",
+            "data-mode": "dark",
+            "data-platform": "web",
+            "data-font": "anthropic",
+            "data-page-bg": "surface-1"
+          },
+          "textLength": 7844
+        }
+      ]
+    },
+    {
+      "depth": 19,
+      "count": 4,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "flex",
+            "flex-col",
+            "overflow-hidden",
+            "h-full",
+            "relative",
+            "print:h-auto",
+            "print:overflow-visible",
+            "print:!flex-auto"
+          ],
+          "dataAttrs": {},
+          "textLength": 7894
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "cds-reset",
+            "group/resize",
+            "outline-none",
+            "focus-visible:outline-hidden",
+            "cursor-col-resize",
+            "relative",
+            "h-full",
+            "z-30",
+            "w-2",
+            "shrink-0",
+            "draggable-none",
+            "print:hidden",
+            "hidden"
+          ],
+          "dataAttrs": {
+            "data-base-ui-tooltip-trigger": "",
+            "data-cds": "ResizeHandle"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "isolate",
+            "min-h-0",
+            "min-w-0",
+            "flex-col",
+            "[&>:where([data-cds=Toolbar]:not([data-flush]))]:px-[var(--cds-panel-header-pad-inline)]",
+            "[&>:where([data-cds=Toolbar])]:py-[var(--cds-panel-header-pad-block)]",
+            "[&>:where(.cds-root)>:where([data-cds=Toolbar]:not([data-flush]))]:px-[var(--cds-panel-header-pad-inline)]",
+            "[&>:where(.cds-root)>:where([data-cds=Toolbar])]:py-[var(--cds-panel-header-pad-block)]",
+            "[&>:where([data-cds=Toolbar])]:border-b-0",
+            "[&>:where(.cds-root)>:where([data-cds=Toolbar])]:border-b-0",
+            "bg-surface-2",
+            "z-20",
+            "draggable-none",
+            "print:hidden",
+            "overflow-hidden",
+            "outline-none",
+            "absolute",
+            "inset-x-[var(--df-ceded-gutter,0px)]",
+            "bottom-0",
+            "top-frame-row",
+            "hidden"
+          ],
+          "dataAttrs": {
+            "data-cds": "Panel",
+            "data-flush": ""
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "contents",
+            "print:hidden"
+          ],
+          "dataAttrs": {},
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 20,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "flex",
+            "flex-1",
+            "w-full",
+            "relative",
+            "h-full",
+            "overflow-clip",
+            "[overflow-clip-margin:8px]",
+            "print:!h-auto",
+            "print:!overflow-visible",
+            "print:!mt-0"
+          ],
+          "dataAttrs": {},
+          "textLength": 7894
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "sr-only"
+          ],
+          "dataAttrs": {
+            "data-testid": "response-status-announcer"
+          },
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 21,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "contents"
+          ],
+          "dataAttrs": {},
+          "textLength": 7894
+        }
+      ]
+    },
+    {
+      "depth": 22,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-plugin-pane-row": "bare"
+          },
+          "textLength": 7894
+        }
+      ]
+    },
+    {
+      "depth": 23,
+      "count": 5,
+      "sample": [
+        {
+          "tag": "span",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 0
+        },
+        {
+          "tag": "span",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "sr-only"
+          ],
+          "dataAttrs": {
+            "data-testid": "hub-turn-failure-announcer"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "span",
+          "classes": [
+            "sr-only"
+          ],
+          "dataAttrs": {
+            "data-testid": "hub-remedy-card-announcer"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-plugin-pane-frame": ""
+          },
+          "textLength": 7894
+        }
+      ]
+    },
+    {
+      "depth": 24,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "relative",
+            "flex",
+            "h-full",
+            "min-w-0",
+            "flex-1",
+            "flex-col"
+          ],
+          "dataAttrs": {
+            "data-testid": "bardhub-claudechat-root",
+            "data-conv-id": "5a1cd48b-2932-4346-a285-e975a5744da6",
+            "data-hub-gen": "1",
+            "data-hub-ready": "1",
+            "data-hub-awaiting-creation": "0",
+            "data-hub-draft": "0"
+          },
+          "textLength": 7894
+        },
+        {
+          "tag": "aside",
+          "classes": [
+            "h-full",
+            "flex-shrink-0",
+            "relative",
+            "z-20",
+            "overflow-hidden"
+          ],
+          "dataAttrs": {
+            "data-activity-peek-zone": ""
+          },
+          "textLength": 359
+        }
+      ]
+    },
+    {
+      "depth": 25,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "relative",
+            "flex",
+            "h-full",
+            "flex-row"
+          ],
+          "dataAttrs": {},
+          "textLength": 8253
+        }
+      ]
+    },
+    {
+      "depth": 26,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "peer",
+            "h-full",
+            "empty:hidden"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-hub-host-slot"
+          },
+          "textLength": 8253
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "flex-col",
+            "px-[var(--df-ceded-gutter,0px)]",
+            "hidden",
+            "h-full",
+            "peer-empty:flex"
+          ],
+          "dataAttrs": {
+            "data-testid": "conversation-loading-placeholder"
+          },
+          "textLength": 7
+        }
+      ]
+    },
+    {
+      "depth": 27,
+      "count": 5,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "sr-only",
+            "outline-none"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-stale-nav-sink-before"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "h-full"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-stale-nav-body"
+          },
+          "textLength": 8260
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "absolute",
+            "inset-x-0",
+            "bottom-0",
+            "-top-[var(--df-header-h,0px)]",
+            "cursor-default"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-stale-nav-shield"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "sr-only"
+          ],
+          "dataAttrs": {},
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "sr-only",
+            "outline-none"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-stale-nav-sink-after"
+          },
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 28,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "relative",
+            "h-full"
+          ],
+          "dataAttrs": {
+            "data-testid": "chat-stale-nav-frame"
+          },
+          "textLength": 8260
+        }
+      ]
+    },
+    {
+      "depth": 29,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "relative",
+            "flex-1",
+            "min-h-0",
+            "flex",
+            "flex-col"
+          ],
+          "dataAttrs": {
+            "data-route-outlet": ""
+          },
+          "textLength": 8260
+        }
+      ]
+    },
+    {
+      "depth": 30,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "dframe-pane-scroller",
+            "flex-1",
+            "min-h-0",
+            "flex",
+            "flex-col",
+            "overflow-x-clip",
+            "overflow-y-auto",
+            "-ms-2",
+            "ps-2"
+          ],
+          "dataAttrs": {},
+          "textLength": 8260
+        }
+      ]
+    },
+    {
+      "depth": 31,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "dframe-content-banner"
+          ],
+          "dataAttrs": {},
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "dframe-pane",
+            "dframe-pane-primary",
+            "flex-1",
+            "min-w-0",
+            "relative",
+            "flex",
+            "flex-col"
+          ],
+          "dataAttrs": {
+            "data-col-last": "true"
+          },
+          "textLength": 8260
+        }
+      ]
+    },
+    {
+      "depth": 32,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "dframe-content-inner"
+          ],
+          "dataAttrs": {},
+          "textLength": 8260
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "dframe-peek-nodrag"
+          ],
+          "dataAttrs": {},
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 33,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "cds-root",
+            "text-primary",
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-density": "comfortable",
+            "data-mode": "dark",
+            "data-platform": "web",
+            "data-font": "anthropic",
+            "data-page-bg": "surface-1"
+          },
+          "textLength": 1081
+        },
+        {
+          "tag": "main",
+          "classes": [
+            "dframe-content"
+          ],
+          "dataAttrs": {
+            "data-perf-region": "main"
+          },
+          "textLength": 8260
+        }
+      ]
+    },
+    {
+      "depth": 34,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "pointer-events-none",
+            "absolute",
+            "inset-0",
+            "bg-surface-1",
+            "[background-image:linear-gradient(to_right,var(--cds-surface-0)_1px,transparent_1px),linear-gradient(to_bottom,var(--cds-surface-0)_1px,transparent_1px)]",
+            "[background-size:32px_32px]",
+            "task-grid-mount-reveal",
+            "transition-opacity",
+            "duration-500",
+            "ease-in-out",
+            "motion-reduce:transition-none",
+            "opacity-0"
+          ],
+          "dataAttrs": {},
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "dframe-root",
+            "draggable-none",
+            "cds-root",
+            "text-primary"
+          ],
+          "dataAttrs": {
+            "data-web": "true",
+            "data-variant": "web",
+            "data-sidebar-density": "comfortable",
+            "data-density": "comfortable",
+            "data-mode": "dark",
+            "data-platform": "web",
+            "data-font": "anthropic",
+            "data-page-bg": "surface-1",
+            "data-frame-mode": "cowork"
+          },
+          "textLength": 9341
+        }
+      ]
+    },
+    {
+      "depth": 35,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 0
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "flex",
+            "min-h-0",
+            "min-w-0",
+            "w-full",
+            "overflow-x-clip",
+            "relative",
+            "overflow-y-clip",
+            "print:!overflow-visible"
+          ],
+          "dataAttrs": {},
+          "textLength": 9341
+        }
+      ]
+    },
+    {
+      "depth": 36,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "grid",
+            "w-full",
+            "overflow-hidden",
+            "print:!h-auto",
+            "print:overflow-visible",
+            "print:block"
+          ],
+          "dataAttrs": {},
+          "textLength": 9341
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-layout-hosts": ""
+          },
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 37,
+      "count": 1,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "root"
+          ],
+          "dataAttrs": {},
+          "textLength": 9341
+        }
+      ]
+    },
+    {
+      "depth": 38,
+      "count": 2,
+      "sample": [
+        {
+          "tag": "div",
+          "classes": [
+            "cds-root",
+            "text-primary",
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-density": "comfortable",
+            "data-mode": "dark",
+            "data-platform": "web",
+            "data-font": "anthropic",
+            "data-page-bg": "surface-1"
+          },
+          "textLength": 9341
+        },
+        {
+          "tag": "div",
+          "classes": [
+            "cds-root",
+            "text-primary",
+            "contents"
+          ],
+          "dataAttrs": {
+            "data-density": "comfortable",
+            "data-platform": "web",
+            "data-font": "anthropic",
+            "data-page-bg": "surface-1"
+          },
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 39,
+      "count": 26,
+      "sample": [
+        {
+          "tag": "script",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 5872
+        },
+        {
+          "tag": "div",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 0
+        },
+        {
+          "tag": "script",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 679
+        },
+        {
+          "tag": "style",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 16925
+        },
+        {
+          "tag": "script",
+          "classes": [],
+          "dataAttrs": {
+            "data-js-cannot-start": ""
+          },
+          "textLength": 521
+        },
+        {
+          "tag": "script",
+          "classes": [],
+          "dataAttrs": {},
+          "textLength": 8767
+        },
+        {
+          "tag": "script",
+          "classes": [],
+          "dataAttrs": {
+            "data-boot-recovery-tail": ""
+          },
+          "textLength": 6144
+        },
+        {
+          "tag": "link",
+          "classes": [],
+          "dataAttrs": {
+            "data-entry-stylesheet": ""
+          },
+          "textLength": 0
+        }
+      ]
+    },
+    {
+      "depth": 40,
+      "count": 4,
+      "sample": [
+        {
+          "tag": "head",
+          "classes": [],
+          "dataAttrs": {
+            "data-ion-ip-country": "ES",
+            "data-ion-clean-url-hop": "",
+            "data-ion-entry-cache": "revalidate",
+            "data-ion-served-at": "1792535882039"
+          },
+          "textLength": 83032
+        },
+        {
+          "tag": "body",
+          "classes": [
+            "bg-surface-1",
+            "text-primary",
+            "font-sans",
+            "min-h-screen",
+            "chat-ui-core"
+          ],
+          "dataAttrs": {
+            "data-new-gr-c-s-check-loaded": "14.1338.0",
+            "data-gr-ext-installed": "",
+            "data-gr-agent-presence-bridge-connection-id": "1792535885997-0.1320982344517696",
+            "data-new-gr-c-s-loaded": "14.1338.0"
+          },
+          "textLength": 50914
+        },
+        {
+          "tag": "grammarly-desktop-integration",
+          "classes": [],
+          "dataAttrs": {
+            "data-grammarly-shadow-root": "true"
+          },
+          "textLength": 0
+        },
+        {
+          "tag": "grammarly-popups",
+          "classes": [
+            "dnXmp"
+          ],
+          "dataAttrs": {
+            "data-grammarly-shadow-root": "true"
+          },
+          "textLength": 0
+        }
+      ]
+    }
+  ]
+}
