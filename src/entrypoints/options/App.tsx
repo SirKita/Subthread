@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'preact/hooks';
 import { BRAND } from '../../lib/brand';
 import { sendTestConnection } from '../../lib/messaging/protocol';
-import { DEFAULT_SETTINGS, getSettings, setSettings } from '../../lib/storage/settings';
+import {
+  CONTEXT_LEVELS,
+  contextLevelForTokens,
+  DEFAULT_SETTINGS,
+  getSettings,
+  setSettings,
+  tokensForContextLevel,
+} from '../../lib/storage/settings';
+import type { ContextLevel } from '../../lib/storage/settings';
 
 const MODELS = [
   { id: 'claude-haiku-5-5', label: 'Claude Haiku 5.5 — fast (default)' },
@@ -85,14 +93,23 @@ export function App() {
       </label>
 
       <label>
-        Max context tokens
-        <input
-          type="number"
-          min={1000}
-          step={1000}
-          value={maxContextTokens}
-          onInput={(e) => setMaxContextTokens(Number(e.currentTarget.value) || 8000)}
-        />
+        Conversation context
+        <select
+          value={contextLevelForTokens(maxContextTokens)}
+          onInput={(e) =>
+            setMaxContextTokens(tokensForContextLevel(e.currentTarget.value as ContextLevel))
+          }
+        >
+          {CONTEXT_LEVELS.map((level) => (
+            <option key={level.id} value={level.id}>
+              {level.label}
+            </option>
+          ))}
+        </select>
+        <span class="help">
+          How much of the conversation is sent with each side question. More gives better answers
+          on long threads and costs slightly more.
+        </span>
       </label>
 
       <div class="actions">

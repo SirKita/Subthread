@@ -39,6 +39,12 @@ label {
   font-weight: 600;
 }
 
+.help {
+  font-weight: 400;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
 input,
 select,
 button {
