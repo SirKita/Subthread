@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { installKeyboardGuard } from './keyboard-guard';
+import { installInputGuard } from './input-guard';
 
 // The guard only reads host.shadowRoot.activeElement, so the host is a minimal
 // fake with a settable activeElement; the input and the event propagation
@@ -15,7 +15,7 @@ function makeHost(): { host: HTMLElement; setActive(el: Element | null): void } 
   };
 }
 
-describe('installKeyboardGuard', () => {
+describe('installInputGuard', () => {
   let input: HTMLInputElement;
   let uninstall: (() => void) | null = null;
   const docBubbleListener = vi.fn();
@@ -53,7 +53,7 @@ describe('installKeyboardGuard', () => {
   it('stops guarded events from reaching document-level listeners (capture and bubble)', () => {
     const { host, setActive } = makeHost();
     setActive(input);
-    uninstall = installKeyboardGuard(host, { onEnter, onEscape });
+    uninstall = installInputGuard(host, { onEnter, onEscape });
 
     const letter = pressKey('a');
 
@@ -68,7 +68,7 @@ describe('installKeyboardGuard', () => {
   it('Enter in our input is defaultPrevented and calls onEnter', () => {
     const { host, setActive } = makeHost();
     setActive(input);
-    uninstall = installKeyboardGuard(host, { onEnter, onEscape });
+    uninstall = installInputGuard(host, { onEnter, onEscape });
 
     const enter = pressKey('Enter');
 
@@ -80,7 +80,7 @@ describe('installKeyboardGuard', () => {
   it('Escape calls onEscape', () => {
     const { host, setActive } = makeHost();
     setActive(input);
-    uninstall = installKeyboardGuard(host, { onEnter, onEscape });
+    uninstall = installInputGuard(host, { onEnter, onEscape });
 
     pressKey('Escape');
 
@@ -92,7 +92,7 @@ describe('installKeyboardGuard', () => {
   it('does nothing when focus is outside the shadow root', () => {
     const { host, setActive } = makeHost();
     setActive(null);
-    uninstall = installKeyboardGuard(host, { onEnter, onEscape });
+    uninstall = installInputGuard(host, { onEnter, onEscape });
 
     const letter = pressKey('a');
     const enter = pressKey('Enter');
@@ -108,10 +108,53 @@ describe('installKeyboardGuard', () => {
   it('stops guarding after uninstall', () => {
     const { host, setActive } = makeHost();
     setActive(input);
-    const remove = installKeyboardGuard(host, { onEnter, onEscape });
+    const remove = installInputGuard(host, { onEnter, onEscape });
     remove();
 
     pressKey('a');
     expect(docBubbleListener).toHaveBeenCalledOnce();
+  });
+
+  describe('clipboard events', () => {
+    const docPasteListener = vi.fn();
+
+    function dispatchPaste(): Event {
+      // Plain Event: happy-dom's ClipboardEvent support is spotty, and the
+      // guard's behavior doesn't depend on the event subclass.
+      const event = new Event('paste', { bubbles: true, cancelable: true, composed: true });
+      input.dispatchEvent(event);
+      return event;
+    }
+
+    beforeEach(() => {
+      document.addEventListener('paste', docPasteListener);
+    });
+
+    afterEach(() => {
+      document.removeEventListener('paste', docPasteListener);
+    });
+
+    it('stops paste from reaching document-level listeners without preventing the default', () => {
+      const { host, setActive } = makeHost();
+      setActive(input);
+      uninstall = installInputGuard(host, { onEnter, onEscape });
+
+      const paste = dispatchPaste();
+
+      expect(docPasteListener).not.toHaveBeenCalled();
+      // Default must NOT be prevented — the browser still pastes into our input.
+      expect(paste.defaultPrevented).toBe(false);
+    });
+
+    it('lets paste through when focus is outside the shadow root', () => {
+      const { host, setActive } = makeHost();
+      setActive(null);
+      uninstall = installInputGuard(host, { onEnter, onEscape });
+
+      const paste = dispatchPaste();
+
+      expect(docPasteListener).toHaveBeenCalledOnce();
+      expect(paste.defaultPrevented).toBe(false);
+    });
   });
 });

@@ -6,7 +6,7 @@ import { streamAsk } from '../lib/messaging/port';
 import type { ErrorMessage } from '../lib/messaging/protocol';
 import { sendGetConfig, sendOpenOptions } from '../lib/messaging/protocol';
 import { isEditableTarget } from './dom';
-import { installKeyboardGuard } from './keyboard-guard';
+import { installInputGuard } from './input-guard';
 import type { AnchorRect } from './types';
 
 const MARGIN = 12;
@@ -77,7 +77,7 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
     inputRef.current?.focus({ preventScroll: true });
   }, [status]);
 
-  // The window-capture keyboard guard stops events before they reach our input,
+  // The window-capture input guard stops events before they reach our input,
   // so the input is uncontrolled and Enter/Escape are handled here via refs
   // (the guard is installed once; refs keep the handlers current).
   const submitQuestion = () => {
@@ -93,7 +93,7 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
     const root = containerRef.current?.getRootNode();
     const host = root instanceof ShadowRoot ? (root.host as HTMLElement) : null;
     if (!host) return;
-    return installKeyboardGuard(host, {
+    return installInputGuard(host, {
       onEnter: () => submitRef.current(),
       onEscape: () => closeRef.current(),
     });
@@ -149,7 +149,7 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
 
       <div class="sq-body">
         {status === 'input' && (
-          // Uncontrolled on purpose: the keyboard guard stops key/input events
+          // Uncontrolled on purpose: the input guard stops key/input events
           // at window capture, so onInput/onKeyDown here would never fire.
           // Enter is handled by the guard; the value is read from the ref.
           <input ref={inputRef} class="sq-question" type="text" placeholder="Ask about this…" />
