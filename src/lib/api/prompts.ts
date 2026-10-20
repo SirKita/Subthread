@@ -1,5 +1,6 @@
 import type { ConversationTurn, ExtractedContext } from '../context/adapter';
 import { fitToBudget } from '../context/budget';
+import type { SideExchange } from '../context/budget';
 
 export type Mode = 'explain' | 'ask';
 
@@ -75,16 +76,43 @@ function speakerLabel(turn: ConversationTurn): string {
   return turn.role === 'user' ? 'User' : 'Assistant';
 }
 
+/**
+ * Build the full request. `sideThread` holds the popover's completed exchanges
+ * (oldest first); `question` is the message being asked NOW. The first kept
+ * exchange's question is embedded in the context message; later exchanges
+ * alternate as plain user/assistant turns. Follow-ups use the ask system
+ * prompt regardless of the opening mode.
+ */
 export function buildRequest(
   ctx: ExtractedContext,
   mode: Mode,
   question: string | undefined,
   maxContextTokens: number,
-): { system: string; messages: [{ role: 'user'; content: string }]; maxTokens: number } {
-  const fitted = fitToBudget(ctx, maxContextTokens);
+  sideThread: SideExchange[] = [],
+): {
+  system: string;
+  messages: Array<{ role: 'user' | 'assistant'; content: string }>;
+  maxTokens: number;
+} {
+  const fitted = fitToBudget(ctx, maxContextTokens, sideThread);
+  const messages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
+
+  if (fitted.sideThread.length === 0) {
+    messages.push({ role: 'user', content: buildUserMessage(fitted.ctx, mode, question) });
+  } else {
+    const [first, ...rest] = fitted.sideThread;
+    messages.push({ role: 'user', content: buildUserMessage(fitted.ctx, mode, first!.question) });
+    messages.push({ role: 'assistant', content: first!.answer });
+    for (const exchange of rest) {
+      messages.push({ role: 'user', content: exchange.question ?? '' });
+      messages.push({ role: 'assistant', content: exchange.answer });
+    }
+    messages.push({ role: 'user', content: question ?? '' });
+  }
+
   return {
-    system: buildSystemPrompt(mode),
-    messages: [{ role: 'user', content: buildUserMessage(fitted, mode, question) }],
+    system: buildSystemPrompt(sideThread.length > 0 ? 'ask' : mode),
+    messages,
     maxTokens: MAX_ANSWER_TOKENS,
   };
 }

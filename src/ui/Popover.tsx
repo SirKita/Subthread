@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Mode } from '../lib/api/prompts';
 import { buildRequest } from '../lib/api/prompts';
 import type { ExtractedContext } from '../lib/context/adapter';
+import type { SideExchange } from '../lib/context/budget';
 import { streamAsk } from '../lib/messaging/port';
 import type { ErrorMessage } from '../lib/messaging/protocol';
 import { sendGetConfig, sendOpenOptions } from '../lib/messaging/protocol';
@@ -26,43 +27,51 @@ interface Props {
 
 export function Popover({ mode, ctx, rect, onClose }: Props) {
   const [status, setStatus] = useState<Status>(mode === 'ask' ? 'input' : 'waiting');
-  const [answer, setAnswer] = useState('');
+  // The side thread: completed exchanges plus (while streaming) the pending one.
+  const [thread, setThread] = useState<SideExchange[]>([]);
   const [error, setError] = useState<StreamError | null>(null);
   const abortRef = useRef<(() => void) | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [, bumpReposition] = useState(0);
 
-  const start = useCallback(
-    async (askQuestion?: string) => {
-      setStatus('waiting');
-      setAnswer('');
-      setError(null);
-      try {
-        const config = await sendGetConfig();
-        const request = buildRequest(ctx, mode, askQuestion, config.maxContextTokens);
-        abortRef.current = streamAsk(request, {
-          onDelta: (text) => {
-            setStatus('streaming');
-            setAnswer((prev) => prev + text);
-          },
-          onDone: () => {
-            abortRef.current = null;
-            setStatus('done');
-          },
-          onError: (streamError) => {
-            abortRef.current = null;
-            setError(streamError);
-            setStatus('error');
-          },
-        });
-      } catch {
-        setError({ kind: 'unknown', message: 'Could not reach the extension background worker' });
-        setStatus('error');
-      }
-    },
-    [ctx, mode],
-  );
+  // Deliberately NOT memoized: each render's `start` closes over the current
+  // thread, and submits go through submitRef (updated every render).
+  const start = async (askQuestion?: string) => {
+    const completed = thread; // all exchanges are complete when a submit is possible
+    setStatus('waiting');
+    setError(null);
+    setThread([...completed, { question: askQuestion, answer: '' }]);
+    try {
+      const config = await sendGetConfig();
+      const request = buildRequest(ctx, mode, askQuestion, config.maxContextTokens, completed);
+      abortRef.current = streamAsk(request, {
+        onDelta: (text) => {
+          setStatus('streaming');
+          setThread((prev) => {
+            const next = [...prev];
+            const last = next[next.length - 1];
+            if (last) next[next.length - 1] = { ...last, answer: last.answer + text };
+            return next;
+          });
+        },
+        onDone: () => {
+          abortRef.current = null;
+          setStatus('done');
+        },
+        onError: (streamError) => {
+          abortRef.current = null;
+          setThread((prev) => prev.slice(0, -1)); // drop the failed pending exchange
+          setError(streamError);
+          setStatus('error');
+        },
+      });
+    } catch {
+      setThread((prev) => prev.slice(0, -1));
+      setError({ kind: 'unknown', message: 'Could not reach the extension background worker' });
+      setStatus('error');
+    }
+  };
 
   // Explain streams immediately; Ask waits for the question. Cleanup aborts in-flight.
   useEffect(() => {
@@ -80,9 +89,12 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
   // The window-capture input guard stops events before they reach our input,
   // so the input is uncontrolled and Enter/Escape are handled here via refs
   // (the guard is installed once; refs keep the handlers current).
+  const inputVisible = status === 'input' || status === 'done' || status === 'error';
   const submitQuestion = () => {
     const value = inputRef.current?.value.trim();
-    if (value && status === 'input') void start(value);
+    if (!value || !inputVisible) return;
+    if (inputRef.current) inputRef.current.value = '';
+    void start(value);
   };
   const submitRef = useRef(submitQuestion);
   submitRef.current = submitQuestion;
@@ -108,8 +120,10 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
   const stop = () => {
     abortRef.current?.();
     abortRef.current = null;
-    setStatus('done');
+    setStatus('done'); // the partial answer stays in the thread
   };
+
+  const lastAnswer = thread.length > 0 ? thread[thread.length - 1]!.answer : '';
 
   // --- positioning: fixed, near the selection, clamped to the viewport ---
   const width = Math.min(MAX_WIDTH, window.innerWidth - 2 * MARGIN);
@@ -148,23 +162,31 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
       </header>
 
       <div class="sq-body">
-        {status === 'input' && (
-          // Uncontrolled on purpose: the input guard stops key/input events
-          // at window capture, so onInput/onKeyDown here would never fire.
-          // Enter is handled by the guard; the value is read from the ref.
-          <input ref={inputRef} class="sq-question" type="text" placeholder="Ask about this…" />
-        )}
+        {thread.map((exchange, i) => (
+          <div class="sq-exchange" key={i}>
+            {exchange.question && <div class="sq-q">{exchange.question}</div>}
+            {exchange.answer && <div class="sq-answer">{exchange.answer}</div>}
+          </div>
+        ))}
 
         {status === 'waiting' && <div class="sq-pending">…</div>}
 
-        {(status === 'streaming' || status === 'done') && answer && (
-          <div class="sq-answer">{answer}</div>
-        )}
-
         {status === 'error' && error && <ErrorView error={error} />}
+
+        {inputVisible && (
+          // Uncontrolled on purpose: the input guard stops key/input events
+          // at window capture, so onInput/onKeyDown here would never fire.
+          // Enter is handled by the guard; the value is read from the ref.
+          <input
+            ref={inputRef}
+            class="sq-question"
+            type="text"
+            placeholder={thread.length === 0 ? 'Ask about this…' : 'Ask a follow-up…'}
+          />
+        )}
       </div>
 
-      {(status === 'streaming' || (status === 'done' && answer)) && (
+      {(status === 'streaming' || (status === 'done' && lastAnswer)) && (
         <footer class="sq-footer">
           {status === 'streaming' ? (
             <button type="button" onClick={stop}>
@@ -173,7 +195,7 @@ export function Popover({ mode, ctx, rect, onClose }: Props) {
           ) : (
             <button
               type="button"
-              onClick={() => void navigator.clipboard.writeText(answer).catch(() => {})}
+              onClick={() => void navigator.clipboard.writeText(lastAnswer).catch(() => {})}
             >
               Copy
             </button>

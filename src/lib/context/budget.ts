@@ -20,24 +20,49 @@ export function windowAround(text: string, anchor: string, maxChars: number): st
   return text.slice(start, end);
 }
 
+/** One completed popover exchange. `question` is undefined only for explain's opening turn. */
+export interface SideExchange {
+  question?: string;
+  answer: string;
+}
+
+export interface BudgetedRequest {
+  ctx: ExtractedContext;
+  sideThread: SideExchange[];
+}
+
 /**
- * Trim context to fit a token budget. Drops priorTurns oldest-first, then
- * precedingUserTurn, then shrinks containingMessage.text around the highlight.
+ * Trim the request to a token budget. Drop order: side-thread exchanges
+ * (question+answer pairs, oldest first), then priorTurns oldest-first, then
+ * precedingUserTurn, then shrink containingMessage.text around the highlight.
  * The highlight itself is never removed.
  */
-export function fitToBudget(ctx: ExtractedContext, maxTokens: number): ExtractedContext {
+export function fitToBudget(
+  ctx: ExtractedContext,
+  maxTokens: number,
+  sideThread: SideExchange[] = [],
+): BudgetedRequest {
   const fitted: ExtractedContext = {
     ...ctx,
     containingMessage: { ...ctx.containingMessage },
     priorTurns: [...ctx.priorTurns],
   };
+  const thread = [...sideThread];
 
   const total = (): number =>
     estimateTokens(fitted.highlight) +
     estimateTokens(fitted.containingMessage.text) +
     (fitted.precedingUserTurn ? estimateTokens(fitted.precedingUserTurn.text) : 0) +
-    fitted.priorTurns.reduce((sum, turn) => sum + estimateTokens(turn.text), 0);
+    fitted.priorTurns.reduce((sum, turn) => sum + estimateTokens(turn.text), 0) +
+    thread.reduce(
+      (sum, exchange) =>
+        sum + estimateTokens(exchange.question ?? '') + estimateTokens(exchange.answer),
+      0,
+    );
 
+  while (total() > maxTokens && thread.length > 0) {
+    thread.shift(); // oldest exchange first; the original context survives
+  }
   while (total() > maxTokens && fitted.priorTurns.length > 0) {
     fitted.priorTurns.shift(); // oldest first
   }
@@ -54,5 +79,5 @@ export function fitToBudget(ctx: ExtractedContext, maxTokens: number): Extracted
       maxChars,
     );
   }
-  return fitted;
+  return { ctx: fitted, sideThread: thread };
 }

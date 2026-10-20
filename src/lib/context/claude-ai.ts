@@ -61,9 +61,7 @@ export const claudeAiAdapter: ConversationAdapter = {
     let precedingUserTurn: ConversationTurn | undefined;
     const priorTurns: ConversationTurn[] = [];
     if (index != null) {
-      const prior = renderedRows
-        .filter((r) => r.index < index)
-        .sort((a, b) => a.index - b.index);
+      const prior = renderedRows.filter((r) => r.index < index).sort((a, b) => a.index - b.index);
       const preceding = [...prior].reverse().find((r) => rowRole(r.row) === 'user');
       if (preceding) {
         precedingUserTurn = { role: 'user', text: rowText(preceding.row) };
@@ -88,8 +86,9 @@ export const claudeAiAdapter: ConversationAdapter = {
 
 /** /chat/<uuid> → the uuid; undefined for any other path. */
 export function conversationIdFromPathname(pathname: string): string | undefined {
-  const match =
-    /\/chat\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i.exec(pathname);
+  const match = /\/chat\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i.exec(
+    pathname,
+  );
   return match?.[1];
 }
 
@@ -177,8 +176,21 @@ function rowText(row: Element): string {
 
 // Block-level tags get blank lines around them; list items/rows get newlines.
 const PARAGRAPH_TAGS = new Set([
-  'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'pre', 'blockquote',
-  'table', 'div', 'section', 'article',
+  'p',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'ol',
+  'ul',
+  'pre',
+  'blockquote',
+  'table',
+  'div',
+  'section',
+  'article',
 ]);
 const LINE_TAGS = new Set(['li', 'tr']);
 

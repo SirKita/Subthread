@@ -176,13 +176,19 @@ describe('claudeAiAdapter.extract (structured)', () => {
     }
 
     const assistantCtx = claudeAiAdapter.extract(
-      selectionOver(textNodeIn(feed, '[data-index="31"] [data-perf-reply-text] p'), 'quantum tunneling'),
+      selectionOver(
+        textNodeIn(feed, '[data-index="31"] [data-perf-reply-text] p'),
+        'quantum tunneling',
+      ),
     );
     expect(assistantCtx!.containingMessage.role).toBe('assistant');
     expect(assistantCtx!.precedingUserTurn).toEqual({ role: 'user', text: ROW_30_TEXT });
 
     const userCtx = claudeAiAdapter.extract(
-      selectionOver(textNodeIn(feed, '[data-index="30"] [data-testid="user-message"] p'), 'electrons escape'),
+      selectionOver(
+        textNodeIn(feed, '[data-index="30"] [data-testid="user-message"] p'),
+        'electrons escape',
+      ),
     );
     expect(userCtx!.containingMessage.role).toBe('user');
   });

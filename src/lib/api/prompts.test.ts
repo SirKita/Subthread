@@ -130,4 +130,51 @@ describe('buildRequest', () => {
     expect(request.messages[0]!.role).toBe('user');
     expect(request.messages[0]!.content).toContain('why?');
   });
+
+  it('threads follow-up exchanges as alternating turns after the context message', () => {
+    const request = buildRequest(
+      makeCtx(),
+      'explain',
+      'And why does the barrier width matter?',
+      8000,
+      [
+        { question: undefined, answer: 'It means particles cross energy barriers.' },
+        { question: 'Is that common?', answer: 'Yes, in alpha decay for example.' },
+      ],
+    );
+
+    expect(request.messages.map((m) => m.role)).toEqual([
+      'user',
+      'assistant',
+      'user',
+      'assistant',
+      'user',
+    ]);
+    // First exchange's (explain) opening is embedded in the context message.
+    expect(request.messages[0]!.content).toContain('<highlight>');
+    expect(request.messages[0]!.content).toContain(
+      'Explain the highlight as used in this message.',
+    );
+    expect(request.messages[1]!.content).toBe('It means particles cross energy barriers.');
+    expect(request.messages[2]!.content).toBe('Is that common?');
+    expect(request.messages[4]!.content).toBe('And why does the barrier width matter?');
+    // Follow-ups answer questions, so the ask system prompt applies.
+    expect(request.system).toBe(buildSystemPrompt('ask'));
+  });
+
+  it('re-anchors on the oldest kept exchange when the budget drops early ones', () => {
+    // Context ~23 tokens; each exchange ~40 tokens. Budget 80 forces the
+    // first exchange out; the second's question becomes the context message's
+    // instruction and its answer follows.
+    const request = buildRequest(makeCtx(), 'ask', 'current question?', 80, [
+      { question: 'first question, dropped', answer: 'f'.repeat(105) },
+      { question: 'second question, kept', answer: 's'.repeat(35) },
+    ]);
+
+    expect(request.messages.map((m) => m.role)).toEqual(['user', 'assistant', 'user']);
+    expect(request.messages[0]!.content).toContain('second question, kept');
+    expect(request.messages[0]!.content).not.toContain('first question, dropped');
+    expect(request.messages[1]!.content).toBe('s'.repeat(35));
+    expect(request.messages[2]!.content).toBe('current question?');
+  });
 });
