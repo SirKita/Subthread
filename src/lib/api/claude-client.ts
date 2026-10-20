@@ -38,6 +38,9 @@ export async function* streamMessage(
     messages: params.messages,
     max_tokens: params.maxTokens,
     stream: true,
+    // Side answers should be fast and cheap. No temperature/top_p/top_k and no
+    // thinking field — current models reject the former and default the latter.
+    output_config: { effort: 'low' },
   };
   if (params.system) body.system = params.system;
 

@@ -86,6 +86,7 @@ describe('streamMessage', () => {
       messages: [{ role: 'user', content: 'Say hello.' }],
       max_tokens: 64,
       stream: true,
+      output_config: { effort: 'low' },
     });
   });
 
@@ -100,6 +101,52 @@ describe('streamMessage', () => {
       { type: 'text', text: 'Hel' },
       { type: 'text', text: 'lo' },
       { type: 'done', usage: { input_tokens: 12, output_tokens: 5 } },
+    ]);
+  });
+
+  it('ignores thinking and signature deltas, yielding only text', async () => {
+    const thinkingEvents = [
+      {
+        event: 'message_start',
+        data: { type: 'message_start', message: { usage: { input_tokens: 20, output_tokens: 1 } } },
+      },
+      {
+        event: 'content_block_start',
+        data: { type: 'content_block_start', index: 0, content_block: { type: 'thinking', thinking: '' } },
+      },
+      {
+        event: 'content_block_delta',
+        data: { type: 'content_block_delta', index: 0, delta: { type: 'thinking_delta', thinking: 'hmm…' } },
+      },
+      {
+        event: 'content_block_delta',
+        data: { type: 'content_block_delta', index: 0, delta: { type: 'signature_delta', signature: 'sig==' } },
+      },
+      { event: 'content_block_stop', data: { type: 'content_block_stop', index: 0 } },
+      {
+        event: 'content_block_start',
+        data: { type: 'content_block_start', index: 1, content_block: { type: 'text', text: '' } },
+      },
+      {
+        event: 'content_block_delta',
+        data: { type: 'content_block_delta', index: 1, delta: { type: 'text_delta', text: 'Answer.' } },
+      },
+      { event: 'content_block_stop', data: { type: 'content_block_stop', index: 1 } },
+      {
+        event: 'message_delta',
+        data: { type: 'message_delta', delta: { stop_reason: 'end_turn' }, usage: { output_tokens: 11 } },
+      },
+      { event: 'message_stop', data: { type: 'message_stop' } },
+    ];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(sseBody(thinkingEvents), { status: 200 })),
+    );
+
+    const events = await collect();
+    expect(events).toEqual([
+      { type: 'text', text: 'Answer.' },
+      { type: 'done', usage: { input_tokens: 20, output_tokens: 11 } },
     ]);
   });
 

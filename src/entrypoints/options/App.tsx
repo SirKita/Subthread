@@ -1,4 +1,3 @@
-import type { TargetedInputEvent } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { sendTestConnection } from '../../lib/messaging/protocol';
 import { DEFAULT_SETTINGS, getSettings, setSettings } from '../../lib/storage/settings';
@@ -7,15 +6,6 @@ const MODELS = [
   { id: 'claude-haiku-5-5', label: 'Claude Haiku 5.5 — fast (default)' },
   { id: 'claude-sonnet-5-5', label: 'Claude Sonnet 5.5 — smarter, slower' },
 ];
-
-function keyInputProps(apiKey: string, setApiKey: (value: string) => void) {
-  return {
-    value: apiKey,
-    placeholder: 'sk-ant-...',
-    autocomplete: 'off',
-    onInput: (e: TargetedInputEvent<HTMLInputElement>) => setApiKey(e.currentTarget.value),
-  };
-}
 
 type TestState =
   | { phase: 'idle' }
@@ -69,12 +59,13 @@ export function App() {
       <label>
         API key
         <span class="key-row">
-          {/* Preact's <input> types discriminate on the literal `type`, so render both variants */}
-          {showKey ? (
-            <input type="text" {...keyInputProps(apiKey, setApiKey)} />
-          ) : (
-            <input type="password" {...keyInputProps(apiKey, setApiKey)} />
-          )}
+          <input
+            type={showKey ? 'text' : 'password'}
+            value={apiKey}
+            placeholder="sk-ant-..."
+            autocomplete="off"
+            onInput={(e) => setApiKey(e.currentTarget.value)}
+          />
           <button type="button" onClick={() => setShowKey(!showKey)}>
             {showKey ? 'Hide' : 'Show'}
           </button>

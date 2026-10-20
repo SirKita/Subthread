@@ -53,7 +53,31 @@ export type TestConnectionResponse =
   | { ok: true; model: string; sample: string }
   | { ok: false; error: { kind: ApiErrorKind; message: string; status?: number } };
 
+export interface OpenOptionsRequest {
+  type: 'open-options';
+}
+
+export interface GetConfigRequest {
+  type: 'get-config';
+}
+
+/** Non-secret settings the content script is allowed to see (never the API key). */
+export interface ExtensionConfig {
+  model: string;
+  maxContextTokens: number;
+}
+
 export function sendTestConnection(): Promise<TestConnectionResponse> {
   const request: TestConnectionRequest = { type: 'test-connection' };
+  return chrome.runtime.sendMessage(request);
+}
+
+export function sendOpenOptions(): void {
+  const request: OpenOptionsRequest = { type: 'open-options' };
+  void chrome.runtime.sendMessage(request);
+}
+
+export function sendGetConfig(): Promise<ExtensionConfig> {
+  const request: GetConfigRequest = { type: 'get-config' };
   return chrome.runtime.sendMessage(request);
 }

@@ -1,7 +1,12 @@
 import { streamMessage } from '../api/claude-client';
 import { toApiError } from '../api/errors';
 import { getSettings } from '../storage/settings';
-import type { AskMessage, BackgroundToContent, TestConnectionResponse } from './protocol';
+import type {
+  AskMessage,
+  BackgroundToContent,
+  ExtensionConfig,
+  TestConnectionResponse,
+} from './protocol';
 
 /** Stream an answer for an "ask" message, forwarding deltas via `post`. */
 export async function handleAsk(
@@ -13,6 +18,14 @@ export async function handleAsk(
   inFlight.set(msg.requestId, controller);
   try {
     const settings = await getSettings();
+    if (!settings.apiKey) {
+      post({
+        type: 'error',
+        requestId: msg.requestId,
+        error: { kind: 'auth', message: 'No API key configured' },
+      });
+      return;
+    }
     const stream = streamMessage({
       apiKey: settings.apiKey,
       model: settings.model,
@@ -40,6 +53,12 @@ export async function handleAsk(
   }
 }
 
+/** Return the non-secret settings the content script needs. Never includes the API key. */
+export async function handleGetConfig(): Promise<ExtensionConfig> {
+  const settings = await getSettings();
+  return { model: settings.model, maxContextTokens: settings.maxContextTokens };
+}
+
 /** Run the options-page "Test connection" round trip against the API. */
 export async function handleTestConnection(): Promise<TestConnectionResponse> {
   try {
@@ -47,7 +66,7 @@ export async function handleTestConnection(): Promise<TestConnectionResponse> {
     if (!settings.apiKey) {
       return {
         ok: false,
-        error: { kind: 'auth', message: 'No API key saved. Add one and press Save first.' },
+        error: { kind: 'auth', message: 'No API key configured' },
       };
     }
     let sample = '';

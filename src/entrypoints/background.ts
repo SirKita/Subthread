@@ -1,5 +1,5 @@
 import { defineBackground } from 'wxt/utils/define-background';
-import { handleAsk, handleTestConnection } from '../lib/messaging/handlers';
+import { handleAsk, handleGetConfig, handleTestConnection } from '../lib/messaging/handlers';
 import { PORT_NAME } from '../lib/messaging/protocol';
 import type { BackgroundToContent, ContentToBackground } from '../lib/messaging/protocol';
 
@@ -32,11 +32,20 @@ export default defineBackground(() => {
     });
   });
 
-  // One-shot messages (options page).
+  // One-shot messages (options page + content script).
   chrome.runtime.onMessage.addListener((raw, _sender, sendResponse) => {
     const msg = raw as { type?: string };
-    if (msg?.type !== 'test-connection') return;
-    void handleTestConnection().then(sendResponse);
-    return true; // keep the channel open for the async response
+    if (msg?.type === 'test-connection') {
+      void handleTestConnection().then(sendResponse);
+      return true; // keep the channel open for the async response
+    }
+    if (msg?.type === 'get-config') {
+      void handleGetConfig().then(sendResponse);
+      return true;
+    }
+    if (msg?.type === 'open-options') {
+      void chrome.runtime.openOptionsPage();
+    }
+    return undefined;
   });
 });
