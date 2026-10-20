@@ -8,14 +8,16 @@ export const MAX_ANSWER_TOKENS = 1024;
 
 const FRAME =
   'You are a quick side-question helper embedded in the Claude web app. ' +
-  "The user is reading an AI assistant's response in an ongoing conversation and has " +
+  "The user is reading a message in the conversation (usually the assistant's) and has " +
   'highlighted a phrase in it; they want a quick side answer without derailing the main conversation.';
 
 const STYLE =
   'Write plain prose only: no headers, no bullet points, no markdown, no preamble, and do not ' +
   'restate the phrase or refer to it as "the highlighted phrase" — just answer directly. ' +
   'Use the conversation context to ground your answer; if the phrase is ambiguous, pick the ' +
-  'reading the context supports.';
+  'reading the context supports. If the context does not settle what the phrase means, give ' +
+  'the most common reading and say in a few words that the context did not specify. ' +
+  'Answer in the language the conversation is written in.';
 
 const EXPLAIN_TASK =
   'Explain the highlighted phrase as it is used in this context, in 2–3 plain sentences. ' +
@@ -31,11 +33,6 @@ export function buildSystemPrompt(mode: Mode): string {
 }
 
 export function buildUserMessage(ctx: ExtractedContext, mode: Mode, question?: string): string {
-  const turns: ConversationTurn[] = [...ctx.priorTurns];
-  if (ctx.precedingUserTurn) turns.push(ctx.precedingUserTurn);
-  const conversation =
-    turns.length > 0 ? turns.map((turn) => `${turn.role}: ${turn.text}`).join('\n\n') : 'none';
-
   const instruction =
     mode === 'ask' && question?.trim()
       ? question.trim()
@@ -43,10 +40,10 @@ export function buildUserMessage(ctx: ExtractedContext, mode: Mode, question?: s
 
   return [
     '<conversation_context>',
-    conversation,
+    conversationSection(ctx),
     '</conversation_context>',
     '',
-    '<message_containing_highlight>',
+    `<message_containing_highlight role="${ctx.containingMessage.role}">`,
     ctx.containingMessage.text,
     '</message_containing_highlight>',
     '',
@@ -56,6 +53,26 @@ export function buildUserMessage(ctx: ExtractedContext, mode: Mode, question?: s
     '',
     instruction,
   ].join('\n');
+}
+
+function conversationSection(ctx: ExtractedContext): string {
+  const blocks: string[] = [];
+  if ((ctx.position?.earliestRenderedIndex ?? 0) > 0) {
+    blocks.push('[earlier turns exist but are not shown]');
+  }
+  for (const turn of ctx.priorTurns) {
+    blocks.push(`${speakerLabel(turn)}: ${turn.text}`);
+  }
+  if (ctx.precedingUserTurn) {
+    blocks.push(
+      `User (the prompt that produced the highlighted message): ${ctx.precedingUserTurn.text}`,
+    );
+  }
+  return blocks.length > 0 ? blocks.join('\n\n') : 'none';
+}
+
+function speakerLabel(turn: ConversationTurn): string {
+  return turn.role === 'user' ? 'User' : 'Assistant';
 }
 
 export function buildRequest(
