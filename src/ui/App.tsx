@@ -93,7 +93,13 @@ export function App() {
   const openPopover = (mode: Mode) => {
     if (!toolbar) return;
     // Only one popover at a time; replacing unmounts the old one, aborting its stream.
-    setPopover({ id: nextId.current++, kind: 'selection', mode, ctx: toolbar.ctx, rect: toolbar.rect });
+    setPopover({
+      id: nextId.current++,
+      kind: 'selection',
+      mode,
+      ctx: toolbar.ctx,
+      rect: toolbar.rect,
+    });
     setToolbar(null); // toolbar hides when the popover opens
   };
 
@@ -116,7 +122,12 @@ export function App() {
         />
       )}
       {popover && popover.kind === 'history' && (
-        <Popover key={popover.id} rect={null} initialView="history" onClose={() => setPopover(null)} />
+        <Popover
+          key={popover.id}
+          rect={null}
+          initialView="history"
+          onClose={() => setPopover(null)}
+        />
       )}
     </>
   );

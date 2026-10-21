@@ -117,8 +117,8 @@ export function App() {
           ))}
         </select>
         <span class="help">
-          How much of the conversation is sent with each side question. More gives better answers
-          on long threads and costs slightly more.
+          How much of the conversation is sent with each side question. More gives better answers on
+          long threads and costs slightly more.
         </span>
       </label>
 

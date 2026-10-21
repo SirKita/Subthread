@@ -34,7 +34,9 @@ export function contextLevelForTokens(tokens: number): ContextLevel {
 }
 
 export function tokensForContextLevel(level: ContextLevel): number {
-  return CONTEXT_LEVELS.find((entry) => entry.id === level)?.tokens ?? DEFAULT_SETTINGS.maxContextTokens;
+  return (
+    CONTEXT_LEVELS.find((entry) => entry.id === level)?.tokens ?? DEFAULT_SETTINGS.maxContextTokens
+  );
 }
 
 export async function getSettings(): Promise<Settings> {

@@ -2,7 +2,7 @@
   "name": "side-question",
   "description": "Highlight a phrase on claude.ai and ask a side question without touching the conversation.",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
@@ -13,11 +13,13 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "check": "pnpm typecheck && pnpm lint && pnpm test"
+    "check": "pnpm typecheck && pnpm lint && pnpm test",
+    "icons": "node scripts/icons.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild"
+      "esbuild",
+      "sharp"
     ]
   },
   "dependencies": {
@@ -31,6 +33,7 @@
     "eslint-config-prettier": "^10.1.8",
     "happy-dom": "^21.0.3",
     "prettier": "^3.9.10",
+    "sharp": "^0.35.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.71.2",
     "vitest": "^5.0.5",
