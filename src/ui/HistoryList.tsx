@@ -44,6 +44,7 @@ export function HistoryList({ conversationId, onOpen }: Props) {
             <button
               type="button"
               class="st-close"
+              title="Delete"
               aria-label="Delete"
               onClick={() => {
                 if (!conversationId) return;
