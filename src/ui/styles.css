@@ -97,6 +97,20 @@
   overflow-y: auto;
 }
 
+/* Answers and questions are selectable; chrome (header, footers, buttons) is not. */
+.st-thread {
+  user-select: text;
+}
+
+.st-toolbar,
+.st-header,
+.st-footer,
+.st-history,
+.st-history-footer,
+.st-empty {
+  user-select: none;
+}
+
 .st-question {
   font: inherit;
   width: 100%;

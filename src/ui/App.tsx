@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Mode } from '../lib/api/prompts';
 import type { ExtractedContext } from '../lib/context/adapter';
 import { claudeAiAdapter } from '../lib/context/claude-ai';
-import { isOwnUiEvent } from './dom';
+import { isOwnUiEvent, isSelectionInOwnUi } from './dom';
 import { Popover } from './Popover';
 import { Toolbar } from './Toolbar';
 import type { AnchorRect } from './types';
@@ -29,8 +29,13 @@ export function App() {
 
     const showToolbarForSelection = () => {
       const selection = window.getSelection();
-      const ctx = selection ? claudeAiAdapter.extract(selection) : null;
-      if (!ctx || !selection) {
+      // Never offer Explain/Ask for text selected inside our own popover.
+      if (!selection || isSelectionInOwnUi(selection)) {
+        setToolbar(null);
+        return;
+      }
+      const ctx = claudeAiAdapter.extract(selection);
+      if (!ctx) {
         setToolbar(null);
         return;
       }

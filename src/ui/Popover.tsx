@@ -9,7 +9,7 @@ import { saveThread, type SavedThread } from '../lib/history/store';
 import { streamAsk } from '../lib/messaging/port';
 import type { ErrorMessage } from '../lib/messaging/protocol';
 import { sendGetConfig, sendOpenOptions } from '../lib/messaging/protocol';
-import { isEditableTarget } from './dom';
+import { isEditableTarget, isWithin } from './dom';
 import { HistoryList } from './HistoryList';
 import { installInputGuard } from './input-guard';
 import type { AnchorRect } from './types';
@@ -215,9 +215,10 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
       ref={containerRef}
       class="st-popover"
       style={style}
-      // Keep the page selection alive, but never block focus on editable targets.
+      // Keep the page selection alive, but never block editable targets or
+      // text selection inside the thread body.
       onMouseDown={(e) => {
-        if (!isEditableTarget(e)) e.preventDefault();
+        if (!isEditableTarget(e) && !isWithin(e, '.st-thread')) e.preventDefault();
       }}
     >
       <header class="st-header">
@@ -251,7 +252,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
         </div>
       ) : (
         <>
-          <div class="st-body">
+          <div class="st-body st-thread">
             {thread.map((exchange, i) => (
               <div class="st-exchange" key={i}>
                 {exchange.question && <div class="st-q">{exchange.question}</div>}

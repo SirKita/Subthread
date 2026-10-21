@@ -3,7 +3,7 @@ import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { describeAncestry } from '../lib/context/dump';
 import { App } from '../ui/App';
-import { HOST_TAG } from '../ui/dom';
+import { HOST_TAG, isSelectionInOwnUi } from '../ui/dom';
 import '../ui/styles.css';
 
 const DEBUG = false;
@@ -55,6 +55,7 @@ function onDumpHotkey(event: KeyboardEvent): void {
   }
   const selection = window.getSelection();
   if (!selection || selection.isCollapsed || selection.rangeCount === 0) return;
+  if (isSelectionInOwnUi(selection)) return; // dumps describe the page, not our UI
   event.preventDefault();
 
   const node = selection.getRangeAt(0).commonAncestorContainer;
