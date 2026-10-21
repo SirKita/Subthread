@@ -246,12 +246,6 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
     (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
   };
 
-  const stop = () => {
-    abortRef.current?.();
-    abortRef.current = null;
-    setStatus('done'); // the partial answer stays in the thread and is persisted
-  };
-
   const copyAnswer = () => {
     navigator.clipboard.writeText(lastAnswer).then(
       () => setCopyState('copied'),
@@ -392,23 +386,18 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
             )}
           </div>
 
-          {(status === 'streaming' || (status === 'done' && lastAnswer)) && (
+          {status === 'done' && lastAnswer && (
             <footer class="st-footer">
-              {status === 'streaming' ? (
-                <button type="button" onClick={stop}>
-                  Stop
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  title="Copy answer"
-                  aria-label="Copy answer"
-                  disabled={copyState !== 'idle'}
-                  onClick={copyAnswer}
-                >
-                  {copyState === 'idle' ? 'Copy' : copyState === 'copied' ? 'Copied' : 'Copy failed'}
-                </button>
-              )}
+              {/* Aborting mid-stream is Escape or ×; both unmount/close and cancel the request. */}
+              <button
+                type="button"
+                title="Copy answer"
+                aria-label="Copy answer"
+                disabled={copyState !== 'idle'}
+                onClick={copyAnswer}
+              >
+                {copyState === 'idle' ? 'Copy' : copyState === 'copied' ? 'Copied' : 'Copy failed'}
+              </button>
             </footer>
           )}
         </>
