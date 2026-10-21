@@ -1,12 +1,9 @@
-# side-question
+# Subthread
 
 Chrome extension (MV3) for claude.ai: highlight a phrase in a Claude response, get a mini-toolbar
-with **Explain** / **Ask**, and stream the answer into a small popover — without touching the main
-conversation. Answers use your own Anthropic API key (BYOK).
-
-**Phase 0** (this commit): scaffold + API path. The options page saves an API key and can stream a
-test message from the Claude API. The content script is a stub that proves it runs on claude.ai.
-The highlight toolbar arrives in Phase 1.
+with **Explain** / **Ask**, and stream the answer into a small popover — a subthread beside the
+main conversation, without touching it. Follow-ups continue in the same popover, and threads are
+saved to a local history per conversation. Answers use your own Anthropic API key (BYOK).
 
 ## Prerequisites
 
@@ -19,6 +16,8 @@ The highlight toolbar arrives in Phase 1.
 | `pnpm install`   | Install dependencies (runs `wxt prepare` to generate `.wxt/` types) |
 | `pnpm dev`       | Dev mode — builds and opens a browser with the extension loaded     |
 | `pnpm build`     | Production build to `.output/chrome-mv3`                            |
+| `pnpm zip`       | Store-uploadable zip in `.output/`                                  |
+| `pnpm icons`     | Re-render `public/icon/source.svg` to the manifest PNG sizes        |
 | `pnpm test`      | Run the unit tests once (Vitest)                                    |
 | `pnpm typecheck` | `tsc --noEmit`                                                      |
 | `pnpm lint`      | ESLint                                                              |
@@ -34,7 +33,7 @@ The highlight toolbar arrives in Phase 1.
 
 ## Configure the API key & test the connection
 
-1. On `chrome://extensions`, find **side-question** → **Details** → **Extension options**
+1. On `chrome://extensions`, find **Subthread** → **Details** → **Extension options**
    (or right-click the extension icon → Options)
 2. Paste your Anthropic API key — create one at
    <https://platform.claude.com/settings/keys> — pick a model, and click **Save**
@@ -45,9 +44,12 @@ The highlight toolbar arrives in Phase 1.
 The key lives only in `chrome.storage.local` and is read only by the background service worker.
 The extension's sole network destination is `https://api.anthropic.com`.
 
-## Phase 0 sanity check on claude.ai
+## Using it
 
-Open <https://claude.ai>, then DevTools (F12) → Console:
+Select text in a Claude response on claude.ai → **Explain** streams immediately, **Ask** takes a
+question first. Ask follow-ups in the same popover. The toolbar icon (or the ↺ button in the
+popover) opens the saved history for the current conversation.
 
-- On page load: `[side-question] content script loaded`
-- Select any text: `[side-question] selection length: <n>` (only the length is logged, never the text)
+Dev helpers: `Ctrl/Cmd+Shift+D` with a selection copies a structure-only DOM dump (lengths, never
+text) for selector calibration; set `DEBUG = true` in `src/entrypoints/claude.content.ts` or
+`src/ui/input-guard.ts` for verbose logging with a `[subthread]` prefix.

@@ -2,7 +2,7 @@ import type { StreamParams } from '../api/claude-client';
 import type { ApiErrorKind } from '../api/errors';
 
 /** Name of the long-lived port used for streaming answers. */
-export const PORT_NAME = 'side-question';
+export const PORT_NAME = 'subthread';
 
 // ---- Content script -> background (over the port) ----
 

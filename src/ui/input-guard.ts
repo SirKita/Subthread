@@ -43,14 +43,14 @@ export function installInputGuard(host: HTMLElement, handlers: InputGuardHandler
     const engaged = active != null;
 
     if (DEBUG) {
-      console.log('[side-question] guard', {
+      console.log('[subthread] guard', {
         type: event.type,
         key: event instanceof KeyboardEvent ? event.key : undefined,
         engaged,
       });
       window.setTimeout(() => {
         console.log(
-          '[side-question] guard focus doc=%s shadow=%s',
+          '[subthread] guard focus doc=%s shadow=%s',
           document.activeElement?.tagName,
           host.shadowRoot?.activeElement?.tagName,
         );

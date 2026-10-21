@@ -14,13 +14,13 @@ export default defineContentScript({
 
   async main(ctx) {
     if (DEBUG) {
-      console.log('[side-question] content script loaded');
+      console.log('[subthread] content script loaded');
       let debounce: number | undefined;
       document.addEventListener('selectionchange', () => {
         window.clearTimeout(debounce);
         debounce = window.setTimeout(() => {
           // Log only the LENGTH — never the selected text itself.
-          console.log('[side-question] selection length:', selectionLength());
+          console.log('[subthread] selection length:', selectionLength());
         }, 150);
       });
     }
@@ -63,6 +63,6 @@ function onDumpHotkey(event: KeyboardEvent): void {
 
   // describeAncestry never includes text content — structure and lengths only.
   const dump = { ...describeAncestry(element), selectionLength: selection.toString().length };
-  console.log('[side-question] DOM structure dump', dump);
+  console.log('[subthread] DOM structure dump', dump);
   void navigator.clipboard.writeText(JSON.stringify(dump, null, 2)).catch(() => {});
 }

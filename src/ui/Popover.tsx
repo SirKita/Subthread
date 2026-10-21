@@ -213,26 +213,26 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
   return (
     <div
       ref={containerRef}
-      class="sq-popover"
+      class="st-popover"
       style={style}
       // Keep the page selection alive, but never block focus on editable targets.
       onMouseDown={(e) => {
         if (!isEditableTarget(e)) e.preventDefault();
       }}
     >
-      <header class="sq-header">
+      <header class="st-header">
         {view === 'history' && ctx && (
-          <button type="button" class="sq-icon" aria-label="Back" onClick={() => setView('thread')}>
+          <button type="button" class="st-icon" aria-label="Back" onClick={() => setView('thread')}>
             ←
           </button>
         )}
-        <span class="sq-highlight" title={headerText}>
+        <span class="st-highlight" title={headerText}>
           {view === 'history' ? 'History' : headerText}
         </span>
         {view === 'thread' && (
           <button
             type="button"
-            class="sq-icon"
+            class="st-icon"
             title="History"
             aria-label="History"
             onClick={() => setView('history')}
@@ -240,26 +240,26 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
             ↺
           </button>
         )}
-        <button type="button" class="sq-close" aria-label="Close" onClick={onClose}>
+        <button type="button" class="st-close" aria-label="Close" onClick={onClose}>
           ×
         </button>
       </header>
 
       {view === 'history' ? (
-        <div class="sq-body">
+        <div class="st-body">
           <HistoryList conversationId={conversationId} onOpen={openSavedThread} />
         </div>
       ) : (
         <>
-          <div class="sq-body">
+          <div class="st-body">
             {thread.map((exchange, i) => (
-              <div class="sq-exchange" key={i}>
-                {exchange.question && <div class="sq-q">{exchange.question}</div>}
-                {exchange.answer && <div class="sq-answer">{exchange.answer}</div>}
+              <div class="st-exchange" key={i}>
+                {exchange.question && <div class="st-q">{exchange.question}</div>}
+                {exchange.answer && <div class="st-answer">{exchange.answer}</div>}
               </div>
             ))}
 
-            {status === 'waiting' && <div class="sq-pending">…</div>}
+            {status === 'waiting' && <div class="st-pending">…</div>}
 
             {status === 'error' && error && <ErrorView error={error} />}
 
@@ -269,7 +269,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
               // Enter is handled by the guard; the value is read from the ref.
               <input
                 ref={inputRef}
-                class="sq-question"
+                class="st-question"
                 type="text"
                 placeholder={thread.length === 0 ? 'Ask about this…' : 'Ask a follow-up…'}
               />
@@ -277,7 +277,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
           </div>
 
           {(status === 'streaming' || (status === 'done' && lastAnswer)) && (
-            <footer class="sq-footer">
+            <footer class="st-footer">
               {status === 'streaming' ? (
                 <button type="button" onClick={stop}>
                   Stop
@@ -301,7 +301,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
 function ErrorView({ error }: { error: StreamError }) {
   const { text, settings } = friendlyError(error);
   return (
-    <div class="sq-error">
+    <div class="st-error">
       <p>{text}</p>
       {settings && (
         <button type="button" onClick={() => sendOpenOptions()}>

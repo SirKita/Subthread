@@ -1,5 +1,5 @@
 /** WXT shadow host element name. */
-export const HOST_TAG = 'side-question-ui';
+export const HOST_TAG = 'subthread-ui';
 
 /** The innermost real target of an event, even across open shadow roots. */
 export function eventTargetElement(event: Event): Element | null {

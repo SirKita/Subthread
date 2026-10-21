@@ -8,7 +8,7 @@ export type Mode = 'explain' | 'ask';
 export const MAX_ANSWER_TOKENS = 1024;
 
 const FRAME =
-  'You are a quick side-question helper embedded in the Claude web app. ' +
+  'You are a helper for quick side questions, embedded in the Claude web app. ' +
   "The user is reading a message in the conversation (usually the assistant's) and has " +
   'highlighted a phrase in it; they want a quick side answer without derailing the main conversation.';
 

@@ -3,7 +3,7 @@
 // identifiers like the port name, host element tag, and package name are
 // deliberately not derived from it — they are not user-visible).
 export const BRAND = {
-  name: 'side-question',
+  name: 'Subthread',
   shortDescription:
-    'Ask a quick side question about any highlighted phrase on claude.ai, without derailing the conversation.',
+    'Open a quick subthread about any highlighted phrase on claude.ai — ask a side question without derailing the conversation.',
 } as const;

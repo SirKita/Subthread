@@ -1,5 +1,5 @@
 {
-  "name": "side-question",
+  "name": "subthread",
   "description": "Highlight a phrase on claude.ai and ask a side question without touching the conversation.",
   "private": true,
   "version": "0.3.0",

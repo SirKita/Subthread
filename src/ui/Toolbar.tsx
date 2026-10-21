@@ -22,7 +22,7 @@ export function Toolbar({ rect, onExplain, onAsk }: Props) {
 
   return (
     <div
-      class="sq-toolbar"
+      class="st-toolbar"
       style={{ top: `${top}px`, left: `${left}px` }}
       // Keep the page selection alive: without this, mousedown clears it.
       // (Never blocks editable targets; the toolbar has none, but keep the audit rule.)

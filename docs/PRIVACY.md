@@ -1,11 +1,8 @@
-# {{NAME}} — Privacy
-
-_{{NAME}} is the working name of this extension; if the store listing shows a
-different name, this policy applies to it unchanged._
+# Subthread — Privacy
 
 ## The short version
 
-{{NAME}} lets you highlight a phrase on claude.ai and ask a quick side question
+Subthread lets you highlight a phrase on claude.ai and ask a quick side question
 about it. Everything it does happens between your browser and Anthropic's API,
 using your own API key. Nothing is ever sent to us — we don't run any servers,
 and there are no analytics, trackers, or telemetry of any kind.
@@ -30,7 +27,7 @@ Stored in your browser's local extension storage, and nowhere else:
 
 - your Anthropic API key,
 - your settings (model choice, how much conversation context to send),
-- your side-question history: the highlighted phrases, short snippets of the
+- your subthread history: the highlighted phrases, short snippets of the
   surrounding conversation, and the questions and answers from each thread.
 
 History is capped (at most 50 threads per conversation, 300 in total) and old
