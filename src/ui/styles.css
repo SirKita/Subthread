@@ -140,8 +140,53 @@
 }
 
 .st-pending {
-  opacity: 0.5;
-  letter-spacing: 2px;
+  display: flex;
+  gap: 5px;
+  padding: 6px 2px;
+}
+
+.st-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+  animation: st-wave 1s ease-in-out infinite;
+}
+
+.st-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.st-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes st-wave {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes st-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-dot {
+    animation-name: st-pulse; /* gentle opacity pulse, no movement */
+  }
 }
 
 .st-exchange + .st-exchange {

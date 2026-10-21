@@ -369,7 +369,13 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
               </div>
             ))}
 
-            {status === 'waiting' && <div class="st-pending">…</div>}
+            {status === 'waiting' && (
+              <div class="st-pending" role="status" aria-label="Waiting for the answer">
+                <span class="st-dot" />
+                <span class="st-dot" />
+                <span class="st-dot" />
+              </div>
+            )}
 
             {status === 'error' && error && <ErrorView error={error} />}
 
