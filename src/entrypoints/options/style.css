@@ -45,6 +45,8 @@ label {
   opacity: 0.75;
 }
 
+/* Native controls get explicit colors in BOTH schemes — relying on
+   inheritance/color-scheme leaves the dropdown list white-on-white in dark. */
 input,
 select,
 button {
@@ -52,8 +54,28 @@ button {
   padding: 0.45rem 0.6rem;
   border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
   border-radius: 6px;
-  background: transparent;
-  color: inherit;
+  background: #ffffff;
+  color: #1a1a1a;
+  accent-color: #6d5bd8;
+}
+
+option {
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+@media (prefers-color-scheme: dark) {
+  input,
+  select,
+  button {
+    background: #262626;
+    color: #ececec;
+  }
+
+  option {
+    background: #262626;
+    color: #ececec;
+  }
 }
 
 .key-row {
