@@ -46,6 +46,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
   // The side thread: completed exchanges plus (while streaming) the pending one.
   const [thread, setThread] = useState<SideExchange[]>([]);
   const [error, setError] = useState<StreamError | null>(null);
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
   const abortRef = useRef<(() => void) | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -251,6 +252,19 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
     setStatus('done'); // the partial answer stays in the thread and is persisted
   };
 
+  const copyAnswer = () => {
+    navigator.clipboard.writeText(lastAnswer).then(
+      () => setCopyState('copied'),
+      () => setCopyState('failed'),
+    );
+  };
+
+  useEffect(() => {
+    if (copyState === 'idle') return;
+    const timer = window.setTimeout(() => setCopyState('idle'), 1500);
+    return () => window.clearTimeout(timer);
+  }, [copyState]);
+
   const lastAnswer = thread.length > 0 ? thread[thread.length - 1]!.answer : '';
   const conversationId =
     ctx?.conversationId ?? conversationIdFromPathname(window.location.pathname);
@@ -381,9 +395,12 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
               ) : (
                 <button
                   type="button"
-                  onClick={() => void navigator.clipboard.writeText(lastAnswer).catch(() => {})}
+                  title="Copy answer"
+                  aria-label="Copy answer"
+                  disabled={copyState !== 'idle'}
+                  onClick={copyAnswer}
                 >
-                  Copy
+                  {copyState === 'idle' ? 'Copy' : copyState === 'copied' ? 'Copied' : 'Copy failed'}
                 </button>
               )}
             </footer>
