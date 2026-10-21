@@ -57,6 +57,18 @@
   gap: 8px;
   padding: 8px 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: grab; /* the header is the drag handle */
+  touch-action: none;
+}
+
+.st-header button {
+  cursor: pointer;
+}
+
+.st-dragging,
+.st-dragging .st-header {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .st-highlight {

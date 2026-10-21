@@ -9,9 +9,10 @@ import { saveThread, type SavedThread } from '../lib/history/store';
 import { streamAsk } from '../lib/messaging/port';
 import type { ErrorMessage } from '../lib/messaging/protocol';
 import { sendGetConfig, sendOpenOptions } from '../lib/messaging/protocol';
-import { isEditableTarget, isWithin } from './dom';
+import { eventTargetElement, isEditableTarget, isWithin } from './dom';
 import { HistoryList } from './HistoryList';
 import { installInputGuard } from './input-guard';
+import { clampToViewport } from './position';
 import type { AnchorRect } from './types';
 
 const MARGIN = 12;
@@ -52,6 +53,10 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
   const createdAtRef = useRef<number>(Date.now());
   const streamedRef = useRef(false); // persist only threads that actually streamed here
   const [, bumpReposition] = useState(0);
+  // Dragging: once dragged, dragPos (fixed top/left) wins over the anchor.
+  const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const dragOffset = useRef({ dx: 0, dy: 0 });
 
   // Deliberately NOT memoized: each render's `start` closes over current state;
   // submits go through submitRef (updated every render).
@@ -133,6 +138,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
     createdAtRef.current = saved.createdAt;
     streamedRef.current = false;
     setAnchor(null); // the original selection is gone — use the edge fallback
+    setDragPos(null); // new position context: forget any drag
     setError(null);
     setStatus('done');
     setView('thread');
@@ -169,10 +175,75 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
   }, []);
 
   useEffect(() => {
-    const onResize = () => bumpReposition((n) => n + 1);
+    const onResize = () => {
+      bumpReposition((n) => n + 1);
+      // Re-clamp a dragged popover into the new viewport.
+      setDragPos((prev) => {
+        const el = containerRef.current;
+        if (!prev || !el) return prev;
+        const box = el.getBoundingClientRect();
+        return clampToViewport(
+          prev.x,
+          prev.y,
+          box.width,
+          box.height,
+          window.innerWidth,
+          window.innerHeight,
+          MARGIN,
+        );
+      });
+    };
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
+
+  // --- drag (pointer events on the header, excluding its buttons) ---
+  const onHeaderPointerDown = (e: PointerEvent) => {
+    if (eventTargetElement(e)?.closest('button')) return;
+    e.preventDefault(); // don't disturb the page selection
+    const el = containerRef.current;
+    if (!el) return;
+    const box = el.getBoundingClientRect();
+    dragOffset.current = { dx: e.clientX - box.left, dy: e.clientY - box.top };
+    // Converts a bottom-anchored (flipped-above) popover to top/left on first drag.
+    setDragPos(
+      clampToViewport(
+        box.left,
+        box.top,
+        box.width,
+        box.height,
+        window.innerWidth,
+        window.innerHeight,
+        MARGIN,
+      ),
+    );
+    setDragging(true);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onHeaderPointerMove = (e: PointerEvent) => {
+    if (!dragging) return;
+    const el = containerRef.current;
+    if (!el) return;
+    const box = el.getBoundingClientRect();
+    setDragPos(
+      clampToViewport(
+        e.clientX - dragOffset.current.dx,
+        e.clientY - dragOffset.current.dy,
+        box.width,
+        box.height,
+        window.innerWidth,
+        window.innerHeight,
+        MARGIN,
+      ),
+    );
+  };
+
+  const onHeaderPointerUp = (e: PointerEvent) => {
+    if (!dragging) return;
+    setDragging(false);
+    (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+  };
 
   const stop = () => {
     abortRef.current?.();
@@ -185,10 +256,13 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
     ctx?.conversationId ?? conversationIdFromPathname(window.location.pathname);
 
   // --- positioning: fixed, near the selection, clamped to the viewport;
-  // no anchor → right edge, vertically centered ---
+  // no anchor → right edge, vertically centered; dragged → dragPos wins ---
   const width = Math.min(MAX_WIDTH, window.innerWidth - 2 * MARGIN);
   const style: Record<string, string> = { width: `${width}px` };
-  if (anchor) {
+  if (dragPos) {
+    style.left = `${dragPos.x}px`;
+    style.top = `${dragPos.y}px`;
+  } else if (anchor) {
     const left = Math.min(Math.max(MARGIN, anchor.left), window.innerWidth - width - MARGIN);
     const spaceBelow = window.innerHeight - anchor.bottom;
     const placeBelow = spaceBelow >= 240 || spaceBelow >= anchor.top;
@@ -213,7 +287,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
   return (
     <div
       ref={containerRef}
-      class="st-popover"
+      class={`st-popover${dragging ? ' st-dragging' : ''}`}
       style={style}
       // Keep the page selection alive, but never block editable targets or
       // text selection inside the thread body.
@@ -221,7 +295,13 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
         if (!isEditableTarget(e) && !isWithin(e, '.st-thread')) e.preventDefault();
       }}
     >
-      <header class="st-header">
+      <header
+        class="st-header"
+        onPointerDown={onHeaderPointerDown}
+        onPointerMove={onHeaderPointerMove}
+        onPointerUp={onHeaderPointerUp}
+        onPointerCancel={onHeaderPointerUp}
+      >
         {view === 'history' && ctx && (
           <button type="button" class="st-icon" aria-label="Back" onClick={() => setView('thread')}>
             ←
