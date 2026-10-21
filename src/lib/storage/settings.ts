@@ -12,31 +12,32 @@ export const DEFAULT_SETTINGS: Settings = {
 
 const STORAGE_KEY = 'settings';
 
-// User-facing "Conversation context" levels; Settings.maxContextTokens stays
-// numeric for compatibility, the options page maps it to the nearest level.
-export type ContextLevel = 'less' | 'standard' | 'more';
-
-export const CONTEXT_LEVELS: Array<{ id: ContextLevel; tokens: number; label: string }> = [
-  { id: 'less', tokens: 4000, label: 'Less' },
-  { id: 'standard', tokens: 8000, label: 'Standard' },
-  { id: 'more', tokens: 16000, label: 'More' },
+// User-facing "Conversation context" slider stops; Settings.maxContextTokens
+// stays numeric for compatibility, the options page maps it to the nearest stop.
+export const CONTEXT_LEVELS: ReadonlyArray<{ tokens: number; label?: string }> = [
+  { tokens: 2000, label: 'Less' },
+  { tokens: 4000 },
+  { tokens: 8000, label: 'Standard' },
+  { tokens: 16000 },
+  { tokens: 32000, label: 'More' },
 ];
 
-/** Nearest level for a stored token count; ties round up to the larger level. */
-export function contextLevelForTokens(tokens: number): ContextLevel {
-  let best = CONTEXT_LEVELS[0]!;
-  for (const level of CONTEXT_LEVELS) {
-    if (Math.abs(tokens - level.tokens) <= Math.abs(tokens - best.tokens)) {
-      best = level;
+/** Index of the nearest level for a stored token count; ties round up. */
+export function contextLevelForTokens(tokens: number): number {
+  let best = 0;
+  for (let i = 0; i < CONTEXT_LEVELS.length; i++) {
+    if (
+      Math.abs(tokens - CONTEXT_LEVELS[i]!.tokens) <=
+      Math.abs(tokens - CONTEXT_LEVELS[best]!.tokens)
+    ) {
+      best = i;
     }
   }
-  return best.id;
+  return best;
 }
 
-export function tokensForContextLevel(level: ContextLevel): number {
-  return (
-    CONTEXT_LEVELS.find((entry) => entry.id === level)?.tokens ?? DEFAULT_SETTINGS.maxContextTokens
-  );
+export function tokensForContextLevel(index: number): number {
+  return CONTEXT_LEVELS[index]?.tokens ?? DEFAULT_SETTINGS.maxContextTokens;
 }
 
 export async function getSettings(): Promise<Settings> {

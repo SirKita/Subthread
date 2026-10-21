@@ -10,7 +10,6 @@ import {
   setSettings,
   tokensForContextLevel,
 } from '../../lib/storage/settings';
-import type { ContextLevel } from '../../lib/storage/settings';
 
 const MODELS = [
   { id: 'claude-haiku-5-5', label: 'Claude Haiku 5.5 — fast (default)' },
@@ -104,18 +103,24 @@ export function App() {
 
       <label>
         Conversation context
-        <select
-          value={contextLevelForTokens(maxContextTokens)}
-          onInput={(e) =>
-            setMaxContextTokens(tokensForContextLevel(e.currentTarget.value as ContextLevel))
-          }
-        >
-          {CONTEXT_LEVELS.map((level) => (
-            <option key={level.id} value={level.id}>
-              {level.label}
-            </option>
-          ))}
-        </select>
+        <span class="slider-row">
+          <span class="slider-end">Less</span>
+          <input
+            type="range"
+            min={0}
+            max={CONTEXT_LEVELS.length - 1}
+            step={1}
+            value={contextLevelForTokens(maxContextTokens)}
+            onInput={(e) =>
+              setMaxContextTokens(tokensForContextLevel(Number(e.currentTarget.value)))
+            }
+          />
+          <span class="slider-end">More</span>
+        </span>
+        <span class="help tokens">
+          {tokensForContextLevel(contextLevelForTokens(maxContextTokens)).toLocaleString('en-US')}{' '}
+          tokens
+        </span>
         <span class="help">
           How much of the conversation is sent with each side question. More gives better answers on
           long threads and costs slightly more.

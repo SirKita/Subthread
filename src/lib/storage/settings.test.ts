@@ -49,26 +49,33 @@ describe('settings', () => {
   });
 });
 
-describe('context levels', () => {
-  it('maps exact token counts to their levels', () => {
-    expect(contextLevelForTokens(4000)).toBe('less');
-    expect(contextLevelForTokens(8000)).toBe('standard');
-    expect(contextLevelForTokens(16000)).toBe('more');
+describe('context levels (five slider stops)', () => {
+  it('maps exact token counts to their level index', () => {
+    expect(contextLevelForTokens(2000)).toBe(0);
+    expect(contextLevelForTokens(4000)).toBe(1);
+    expect(contextLevelForTokens(8000)).toBe(2);
+    expect(contextLevelForTokens(16000)).toBe(3);
+    expect(contextLevelForTokens(32000)).toBe(4);
   });
 
   it('maps any stored number to the nearest level, rounding ties up', () => {
-    expect(contextLevelForTokens(0)).toBe('less');
-    expect(contextLevelForTokens(5000)).toBe('less');
-    expect(contextLevelForTokens(6000)).toBe('standard'); // tie -> larger
-    expect(contextLevelForTokens(7000)).toBe('standard');
-    expect(contextLevelForTokens(12000)).toBe('more'); // tie -> larger
-    expect(contextLevelForTokens(11_000)).toBe('standard');
-    expect(contextLevelForTokens(100_000)).toBe('more');
+    expect(contextLevelForTokens(0)).toBe(0);
+    expect(contextLevelForTokens(3000)).toBe(1); // tie 2000/4000 -> larger
+    expect(contextLevelForTokens(5000)).toBe(1);
+    expect(contextLevelForTokens(6000)).toBe(2); // tie 4000/8000 -> larger
+    expect(contextLevelForTokens(10_000)).toBe(2);
+    expect(contextLevelForTokens(12_000)).toBe(3); // tie 8000/16000 -> larger
+    expect(contextLevelForTokens(24_000)).toBe(4); // tie 16000/32000 -> larger
+    expect(contextLevelForTokens(20_000)).toBe(3);
+    expect(contextLevelForTokens(100_000)).toBe(4);
   });
 
-  it('round-trips levels to their token counts', () => {
-    expect(tokensForContextLevel('less')).toBe(4000);
-    expect(tokensForContextLevel('standard')).toBe(8000);
-    expect(tokensForContextLevel('more')).toBe(16000);
+  it('round-trips level indexes to token counts, defaulting out-of-range', () => {
+    expect(tokensForContextLevel(0)).toBe(2000);
+    expect(tokensForContextLevel(1)).toBe(4000);
+    expect(tokensForContextLevel(2)).toBe(8000);
+    expect(tokensForContextLevel(3)).toBe(16000);
+    expect(tokensForContextLevel(4)).toBe(32000);
+    expect(tokensForContextLevel(99)).toBe(DEFAULT_SETTINGS.maxContextTokens);
   });
 });

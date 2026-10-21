@@ -45,6 +45,29 @@ label {
   opacity: 0.75;
 }
 
+.help.tokens {
+  opacity: 0.6;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.slider-row input[type='range'] {
+  flex: 1;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.slider-end {
+  opacity: 0.75;
+}
+
 /* Native controls get explicit colors in BOTH schemes — relying on
    inheritance/color-scheme leaves the dropdown list white-on-white in dark. */
 input,
