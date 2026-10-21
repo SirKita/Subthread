@@ -303,7 +303,13 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
         onPointerCancel={onHeaderPointerUp}
       >
         {view === 'history' && ctx && (
-          <button type="button" class="st-icon" aria-label="Back" onClick={() => setView('thread')}>
+          <button
+            type="button"
+            class="st-icon"
+            title="Back"
+            aria-label="Back"
+            onClick={() => setView('thread')}
+          >
             ←
           </button>
         )}
@@ -318,10 +324,19 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
             aria-label="History"
             onClick={() => setView('history')}
           >
-            ↺
+            ☰
           </button>
         )}
-        <button type="button" class="st-close" aria-label="Close" onClick={onClose}>
+        <button
+          type="button"
+          class="st-icon"
+          title="Settings"
+          aria-label="Settings"
+          onClick={() => sendOpenOptions()}
+        >
+          ⚙
+        </button>
+        <button type="button" class="st-close" title="Close" aria-label="Close" onClick={onClose}>
           ×
         </button>
       </header>
