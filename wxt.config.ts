@@ -12,6 +12,9 @@ export default defineConfig({
     description: BRAND.shortDescription,
     permissions: ['storage'],
     host_permissions: ['https://api.anthropic.com/*'],
+    action: {
+      default_title: BRAND.name,
+    },
     icons: {
       16: 'icon/16.png',
       32: 'icon/32.png',

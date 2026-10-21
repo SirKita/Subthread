@@ -1,9 +1,24 @@
 import { defineBackground } from 'wxt/utils/define-background';
 import { handleAsk, handleGetConfig, handleTestConnection } from '../lib/messaging/handlers';
 import { PORT_NAME } from '../lib/messaging/protocol';
-import type { BackgroundToContent, ContentToBackground } from '../lib/messaging/protocol';
+import type {
+  BackgroundToContent,
+  ContentToBackground,
+  OpenHistoryMessage,
+} from '../lib/messaging/protocol';
 
 export default defineBackground(() => {
+  // Toolbar icon: open history in the claude.ai tab, or the options page elsewhere.
+  chrome.action.onClicked.addListener((tab) => {
+    const openOptions = () => void chrome.runtime.openOptionsPage();
+    if (tab.id == null) {
+      openOptions();
+      return;
+    }
+    const message: OpenHistoryMessage = { type: 'open-history' };
+    chrome.tabs.sendMessage(tab.id, message).catch(openOptions);
+  });
+
   // Streaming channel: one port per content-script page, many requests per port.
   chrome.runtime.onConnect.addListener((port) => {
     if (port.name !== PORT_NAME) return;

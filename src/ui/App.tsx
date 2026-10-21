@@ -15,12 +15,9 @@ interface ToolbarState {
   rect: AnchorRect;
 }
 
-interface PopoverState {
-  id: number;
-  mode: Mode;
-  ctx: ExtractedContext;
-  rect: AnchorRect;
-}
+type PopoverState =
+  | { id: number; kind: 'selection'; mode: Mode; ctx: ExtractedContext; rect: AnchorRect }
+  | { id: number; kind: 'history' };
 
 export function App() {
   const [toolbar, setToolbar] = useState<ToolbarState | null>(null);
@@ -70,23 +67,33 @@ export function App() {
       setPopover(null);
     };
 
+    // Toolbar-icon click, routed from the background worker.
+    const onRuntimeMessage = (raw: unknown): undefined => {
+      if ((raw as { type?: string })?.type !== 'open-history') return;
+      setToolbar(null);
+      setPopover({ id: nextId.current++, kind: 'history' });
+      return;
+    };
+
     document.addEventListener('mouseup', onMouseUp, true);
     document.addEventListener('selectionchange', onSelectionChange);
     document.addEventListener('mousedown', onMouseDown, true);
     document.addEventListener('keydown', onKeyDown, true);
+    chrome.runtime.onMessage.addListener(onRuntimeMessage);
     return () => {
       window.clearTimeout(debounce);
       document.removeEventListener('mouseup', onMouseUp, true);
       document.removeEventListener('selectionchange', onSelectionChange);
       document.removeEventListener('mousedown', onMouseDown, true);
       document.removeEventListener('keydown', onKeyDown, true);
+      chrome.runtime.onMessage.removeListener(onRuntimeMessage);
     };
   }, []);
 
   const openPopover = (mode: Mode) => {
     if (!toolbar) return;
     // Only one popover at a time; replacing unmounts the old one, aborting its stream.
-    setPopover({ id: nextId.current++, mode, ctx: toolbar.ctx, rect: toolbar.rect });
+    setPopover({ id: nextId.current++, kind: 'selection', mode, ctx: toolbar.ctx, rect: toolbar.rect });
     setToolbar(null); // toolbar hides when the popover opens
   };
 
@@ -99,7 +106,7 @@ export function App() {
           onAsk={() => openPopover('ask')}
         />
       )}
-      {popover && (
+      {popover && popover.kind === 'selection' && (
         <Popover
           key={popover.id}
           mode={popover.mode}
@@ -107,6 +114,9 @@ export function App() {
           rect={popover.rect}
           onClose={() => setPopover(null)}
         />
+      )}
+      {popover && popover.kind === 'history' && (
+        <Popover key={popover.id} rect={null} initialView="history" onClose={() => setPopover(null)} />
       )}
     </>
   );

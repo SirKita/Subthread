@@ -104,3 +104,20 @@ button:disabled {
 .sample {
   opacity: 0.7;
 }
+
+.history-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.history-section h2 {
+  font-size: 1rem;
+  margin: 0 0 0.3rem;
+}
+
+button.danger {
+  background: #c0392b;
+  border-color: #c0392b;
+  color: white;
+}

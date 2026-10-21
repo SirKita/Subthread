@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { BRAND } from '../../lib/brand';
+import { clearAll, countAll } from '../../lib/history/store';
 import { sendTestConnection } from '../../lib/messaging/protocol';
 import {
   CONTEXT_LEVELS,
@@ -29,6 +30,8 @@ export function App() {
   const [showKey, setShowKey] = useState(false);
   const [saved, setSaved] = useState(false);
   const [test, setTest] = useState<TestState>({ phase: 'idle' });
+  const [historyCount, setHistoryCount] = useState<number | null>(null);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   useEffect(() => {
     void getSettings().then((s) => {
@@ -36,7 +39,14 @@ export function App() {
       setModel(s.model);
       setMaxContextTokens(s.maxContextTokens);
     });
+    void countAll().then(setHistoryCount);
   }, []);
+
+  async function clearHistory() {
+    await clearAll();
+    setHistoryCount(0);
+    setConfirmClear(false);
+  }
 
   async function save() {
     await setSettings({ apiKey: apiKey.trim(), model, maxContextTokens });
@@ -136,6 +146,35 @@ export function App() {
           {test.kind}: {test.message}
         </p>
       )}
+
+      <section class="history-section">
+        <h2>History</h2>
+        <p class="hint">
+          {historyCount === null
+            ? 'Counting saved side questions…'
+            : historyCount === 1
+              ? '1 saved side question.'
+              : `${historyCount} saved side questions.`}{' '}
+          Stored only on this device.
+        </p>
+        {confirmClear ? (
+          <div class="actions">
+            <span>Delete all saved side questions?</span>
+            <button type="button" class="danger" onClick={() => void clearHistory()}>
+              Yes, clear everything
+            </button>
+            <button type="button" onClick={() => setConfirmClear(false)}>
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div class="actions">
+            <button type="button" onClick={() => setConfirmClear(true)} disabled={!historyCount}>
+              Clear all history
+            </button>
+          </div>
+        )}
+      </section>
     </main>
   );
 }

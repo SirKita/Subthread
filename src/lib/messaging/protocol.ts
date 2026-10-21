@@ -57,6 +57,11 @@ export interface OpenOptionsRequest {
   type: 'open-options';
 }
 
+/** Background -> content script (via tabs.sendMessage from the action button). */
+export interface OpenHistoryMessage {
+  type: 'open-history';
+}
+
 export interface GetConfigRequest {
   type: 'get-config';
 }
