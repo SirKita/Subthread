@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Variant B — loop: one closed loop with a strand leaving the bottom and trailing right.
+       Rules: two colours; every stroke 64 (1/8 canvas); round caps/joins; >= 1/10 margin. -->
+  <rect width="512" height="512" rx="113" fill="#5B2C1E"/>
+  <g fill="none" stroke="#FBF6EF" stroke-width="64" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="230" cy="206.8" r="120"/>
+    <path d="M 230 326.8 C 230 394.8 268 428.8 402 424.8"/>
+  </g>
+</svg>

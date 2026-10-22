@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Variant C — pull: two stacked bars (the thread); the third starts aligned, then curves down and out of line.
+       Rules: two colours; every stroke 64 (1/8 canvas); round caps/joins; >= 1/10 margin. -->
+  <rect width="512" height="512" rx="113" fill="#5B2C1E"/>
+  <g fill="none" stroke="#FBF6EF" stroke-width="64" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 104 98 H 320"/>
+    <path d="M 104 206 H 320"/>
+    <path d="M 104 314 H 200 C 300 314 360 342 408 414"/>
+  </g>
+</svg>
