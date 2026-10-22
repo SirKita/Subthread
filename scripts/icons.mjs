@@ -3,16 +3,21 @@
 //        pnpm icons --preview [name...]  → public/icon/variants/preview.png: a contact sheet of
 //                                          public/icon/variants/<name>.svg (+ <name>-light.svg),
 //                                          all of them or only the names given, at 16 px (actual
-//                                          size and 4× nearest-neighbour zoom), 32 and 128 px on a
-//                                          light and a dark toolbar background, plus 16 px strips
-//                                          on #FFFFFF and #202124 (Chrome's toolbar colours).
+//                                          size and 4× nearest-neighbour zoom), 32 (actual and 2×),
+//                                          48 and 128 px on a light and a dark toolbar background,
+//                                          plus 16 px strips on #FFFFFF and #202124 (Chrome's
+//                                          toolbar colours).
+// Size gate: detail that only survives at larger sizes lives in a <g id="detail">…</g> group (no
+// nested groups). Renders below DETAIL_MIN_PX strip it and get the pure silhouette.
 /* global Buffer */
-import { mkdir, readdir } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
 
 const SOURCE = 'public/icon/source.svg';
 const OUT_DIR = 'public/icon';
 const SIZES = [16, 32, 48, 128];
+const DETAIL_MIN_PX = 32;
+const DETAIL_GROUP = /<g id="detail">[\s\S]*?<\/g>/;
 
 const VARIANTS_DIR = 'public/icon/variants';
 const PREVIEW = `${VARIANTS_DIR}/preview.png`;
@@ -23,6 +28,8 @@ const COLUMNS = [
   { size: 16, zoom: 1, title: '16' },
   { size: 16, zoom: 4, title: '16 ×4' },
   { size: 32, zoom: 1, title: '32' },
+  { size: 32, zoom: 2, title: '32 ×2' },
+  { size: 48, zoom: 1, title: '48' },
   { size: 128, zoom: 1, title: '128' },
 ];
 const THEMES = ['dark', 'light']; // <name>.svg is the dark-background icon, <name>-light.svg the inverted one
@@ -40,17 +47,23 @@ const STRIP_ICON = 16;
 const STRIP_GAP = 12;
 const STRIP_ZOOM = 4;
 
-/** Rasterize an SVG at `size` px: rendered at 8× and downsampled, exactly as the shipped PNGs are. */
-function rasterize(svgPath, size) {
-  return sharp(svgPath, { density: 72 * (size / 128) * 8 })
+/**
+ * Rasterize an SVG at `size` px to a PNG buffer: rendered at 8× and downsampled, exactly as the
+ * shipped PNGs are. Below DETAIL_MIN_PX the detail group is stripped first (silhouette only).
+ */
+async function rasterize(svgPath, size) {
+  const svg = await readFile(svgPath, 'utf8');
+  const input = size < DETAIL_MIN_PX ? svg.replace(DETAIL_GROUP, '') : svg;
+  return sharp(Buffer.from(input), { density: 72 * (size / 128) * 8 })
     .resize(size, size)
-    .png();
+    .png()
+    .toBuffer();
 }
 
 async function renderShipped() {
   await mkdir(OUT_DIR, { recursive: true });
   for (const size of SIZES) {
-    await rasterize(SOURCE, size).toFile(`${OUT_DIR}/${size}.png`);
+    await writeFile(`${OUT_DIR}/${size}.png`, await rasterize(SOURCE, size));
     console.log(`wrote ${OUT_DIR}/${size}.png`);
   }
 }
@@ -71,7 +84,7 @@ async function renderPreview(only) {
   const raster = async (name, theme, size) => {
     const file = `${VARIANTS_DIR}/${name}${theme === 'light' ? '-light' : ''}.svg`;
     const key = `${file}@${size}`;
-    if (!rasters.has(key)) rasters.set(key, await rasterize(file, size).toBuffer());
+    if (!rasters.has(key)) rasters.set(key, await rasterize(file, size));
     return rasters.get(key);
   };
   const zoom = (png, w, h) =>
