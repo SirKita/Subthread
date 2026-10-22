@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- cat-2: cat silhouette, one filled path (round head + two ears, rounded tips). Head tilted 8°, ears follow.
+       Head diameter 62% of canvas, ears 28% tall, tip radius 3%. -->
+  <rect width="512" height="512" rx="113" fill="#7A2E1F"/>
+  <path d="M 400.3 221.9 A 158.7 158.7 0 1 1 135.5 184.7 L 137.5 66.6 A 15.4 15.4 0 0 1 162.6 54.9 L 254.4 129.3 A 158.7 158.7 0 0 1 301.3 135.9 L 410.1 89.7 A 15.4 15.4 0 0 1 430.9 107.8 Z" fill="#F3E9DC"/>
+</svg>
