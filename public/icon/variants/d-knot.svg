@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Variant D — knot monogram: one thread forming a lowercase-ish S, tied in a loose knot.
+       One stroke, width 76, round caps/joins, 4° lean. The bottom bowl closes into a loop whose
+       rising strand passes UNDER the spine: the path is broken there so 83.6 units of background
+       show on each side of the spine (1.1× stroke in total). -->
+  <rect width="512" height="512" rx="113" fill="#7A2E1F"/>
+  <path d="M 389.6 140.3 C 384.6 145.6 371 172.1 359.3 172.3 C 347.6 172.5 334 151.8 319.4 141.4 C 304.7 131 289 116.7 271.5 110 C 253.9 103.3 233.1 99.6 214 101 C 194.8 102.3 171.9 107.9 156.6 118 C 141.4 128.1 123.8 147.1 122.5 161.7 C 121.1 176.3 130.3 191.3 148.5 205.7 C 166.7 220 206.4 232.8 231.8 247.6 C 257.1 262.4 284.5 277.3 300.7 294.5 C 316.8 311.7 330 334.3 328.8 350.6 C 327.7 366.9 310.4 384.4 293.8 392.2 C 277.2 400.1 249.8 400.5 229.3 397.8 C 208.8 395 184.6 386.6 170.7 375.6 C 167.5 373.1 164.4 370.2 161.6 367" fill="none" stroke="#F3E9DC" stroke-width="76" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
