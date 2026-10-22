@@ -58,7 +58,8 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
 - **`output_config: { effort: 'low' }`.** Side answers must be fast and cheap. No
   `temperature`/`top_p`/`top_k` (current models reject them) and no `thinking` field.
 - **Model IDs `claude-haiku-5-5` (default) and `claude-sonnet-5-5` are real.** They were
-  released after most training data. Do not "correct" them to older names.
+  released after most training data. Do not "correct" them to older names. Current as of
+  2026-10; if Test connection returns a model-not-found error, updating them is correct.
 - **Window-capture input guard (`input-guard.ts`).** claude.ai has document-level keyboard and
   clipboard handlers that redirect input to its composer when `document.activeElement` is our
   shadow host. The guard listens at window capture, ahead of any page listener, and calls
@@ -86,11 +87,12 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
 - `pnpm check` (typecheck + lint + test) must pass before every commit.
 - One commit per brief item. Prefixes as in history: `feat(popover):`, `fix:`, `docs:`, `chore:`.
 - `DEBUG` flags in `claude.content.ts` and `input-guard.ts` stay `false` in commits.
-- Git tags `phase-0` … `phase-3.1` mark accepted states. Never move them; a newly accepted state
-  gets a new tag.
-- Status reports go to the CTO in the format used so far: per item, what changed and where;
-  the `pnpm check` result; the commit hash; anything flagged (new deps, deviations, open
-  questions); and whatever the brief asked to see verbatim.
+- Git tags `phase-0` … `phase-3.1` mark accepted states. A tag may be moved only for a hotfix to
+  that same phase before the next phase starts; after that it is frozen.
+- Status reports go to the CTO with these sections in order: files changed (one line each);
+  new/changed exported signatures; test results; deviations from the brief and why;
+  unsure/guessed — be specific; dependencies wanted but not added; plus anything the brief asked
+  to see verbatim.
 - Dev loop: `pnpm dev` (temp profile, hot reload) or `pnpm build` then load `.output/chrome-mv3`
   unpacked.
 
