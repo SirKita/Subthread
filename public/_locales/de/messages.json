@@ -1,0 +1,81 @@
+{
+  "appName": { "message": "Subthread" },
+  "appDescription": {
+    "message": "Öffne zu jeder markierten Stelle auf claude.ai einen schnellen Subthread – stell eine Nebenfrage, ohne die Unterhaltung zu unterbrechen."
+  },
+
+  "toolbarExplain": { "message": "Erklären" },
+  "toolbarAsk": { "message": "Fragen" },
+
+  "popoverBack": { "message": "Zurück" },
+  "popoverHistory": { "message": "Verlauf" },
+  "popoverSettings": { "message": "Einstellungen" },
+  "popoverClose": { "message": "Schließen" },
+  "popoverWaiting": { "message": "Warte auf die Antwort" },
+  "popoverAskPlaceholder": { "message": "Frag etwas dazu …" },
+  "popoverFollowUpPlaceholder": { "message": "Nachfrage stellen …" },
+  "popoverCopy": { "message": "Kopieren" },
+  "popoverCopyAnswer": { "message": "Antwort kopieren" },
+  "popoverCopied": { "message": "Kopiert" },
+  "popoverCopyFailed": { "message": "Fehlgeschlagen" },
+  "popoverOpenSettings": { "message": "Einstellungen" },
+
+  "errorAuth": { "message": "API-Schlüssel fehlt oder ist ungültig" },
+  "errorCredit": { "message": "Kein API-Guthaben mehr" },
+  "errorRateLimit": { "message": "Zu viele Anfragen – versuch es gleich noch mal" },
+  "errorUnreachable": { "message": "Claude ist nicht erreichbar – versuch es noch mal" },
+  "errorBackgroundWorker": {
+    "message": "Der Hintergrundprozess der Erweiterung ist nicht erreichbar"
+  },
+  "errorNoApiKey": { "message": "Kein API-Schlüssel hinterlegt" },
+  "errorLostConnection": { "message": "Verbindung zur Erweiterung verloren" },
+  "errorNetwork": { "message": "Netzwerkanfrage fehlgeschlagen" },
+  "errorRequestStatus": { "message": "Anfrage fehlgeschlagen (Status $1)" },
+  "errorNoBody": { "message": "Antwort ohne Inhalt" },
+  "errorStream": { "message": "Der Stream hat einen Fehler gemeldet" },
+
+  "historyEmpty": { "message": "Noch keine Nebenfragen in dieser Unterhaltung." },
+  "historyDelete": { "message": "Löschen" },
+  "historyClearConversation": { "message": "Diesen Verlauf löschen" },
+
+  "timeJustNow": { "message": "gerade eben" },
+  "timeMinutesAgo": { "message": "vor $1 Min." },
+  "timeHoursAgo": { "message": "vor $1 Std." },
+  "timeYesterday": { "message": "gestern" },
+  "timeDaysAgo": { "message": "vor $1 Tagen" },
+
+  "optionsTitle": { "message": "$1 – Einstellungen" },
+  "optionsIntro": {
+    "message": "Antworten kommen über deinen eigenen Anthropic-API-Schlüssel. Er wird nur lokal gespeichert und nur vom Hintergrundprozess dieser Erweiterung gelesen."
+  },
+  "optionsGetKey": { "message": "API-Schlüssel holen" },
+  "optionsApiKey": { "message": "API-Schlüssel" },
+  "optionsApiKeyPlaceholder": { "message": "sk-ant-..." },
+  "optionsShowKey": { "message": "Anzeigen" },
+  "optionsHideKey": { "message": "Verbergen" },
+  "optionsModel": { "message": "Modell" },
+  "optionsModelHaiku": { "message": "Claude Haiku 5.5 – schnell (Standard)" },
+  "optionsModelSonnet": { "message": "Claude Sonnet 5.5 – klüger, langsamer" },
+  "optionsContext": { "message": "Gesprächskontext" },
+  "optionsContextLess": { "message": "Weniger" },
+  "optionsContextMore": { "message": "Mehr" },
+  "optionsContextTokens": { "message": "$1 Tokens" },
+  "optionsContextHelp": {
+    "message": "Wie viel von der Unterhaltung mit jeder Nebenfrage mitgeschickt wird. Mehr liefert bei langen Unterhaltungen bessere Antworten und kostet etwas mehr."
+  },
+  "optionsSave": { "message": "Speichern" },
+  "optionsSaved": { "message": "Gespeichert" },
+  "optionsTest": { "message": "Testen" },
+  "optionsTesting": { "message": "Teste …" },
+  "optionsTestOk": { "message": "OK – $1" },
+  "optionsTestSample": { "message": "„$1“" },
+  "optionsHistory": { "message": "Verlauf" },
+  "optionsHistoryCounting": { "message": "Zähle gespeicherte Nebenfragen …" },
+  "optionsHistoryCountOne": { "message": "1 gespeicherte Nebenfrage." },
+  "optionsHistoryCountMany": { "message": "$1 gespeicherte Nebenfragen." },
+  "optionsHistoryLocal": { "message": "Nur auf diesem Gerät gespeichert." },
+  "optionsClearConfirm": { "message": "Alle gespeicherten Nebenfragen löschen?" },
+  "optionsClearYes": { "message": "Ja, löschen" },
+  "optionsCancel": { "message": "Abbrechen" },
+  "optionsClearAll": { "message": "Verlauf löschen" }
+}
