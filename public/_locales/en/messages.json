@@ -83,7 +83,7 @@
     "description": "Error shown on network failures or server errors from the API."
   },
   "errorBackgroundWorker": {
-    "message": "Could not reach the extension background worker",
+    "message": "Extension not responding — reload the page",
     "description": "Error shown when the page cannot message the extension's own service worker (e.g. after an update)."
   },
   "errorNoApiKey": {
@@ -91,7 +91,7 @@
     "description": "Error message produced by the background worker when settings hold no API key; visible on the settings page's test result."
   },
   "errorLostConnection": {
-    "message": "Lost connection to the extension",
+    "message": "Connection lost — try again",
     "description": "Error when the message channel to the background worker closes mid-answer."
   },
   "errorNetwork": {

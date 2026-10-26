@@ -17,7 +17,7 @@
   "popoverCopy": { "message": "Kopieren" },
   "popoverCopyAnswer": { "message": "Antwort kopieren" },
   "popoverCopied": { "message": "Kopiert" },
-  "popoverCopyFailed": { "message": "Fehlgeschlagen" },
+  "popoverCopyFailed": { "message": "Nicht kopiert" },
   "popoverOpenSettings": { "message": "Einstellungen" },
 
   "errorAuth": { "message": "API-Schlüssel fehlt oder ist ungültig" },
@@ -25,10 +25,10 @@
   "errorRateLimit": { "message": "Zu viele Anfragen – versuch es gleich noch mal" },
   "errorUnreachable": { "message": "Claude ist nicht erreichbar – versuch es noch mal" },
   "errorBackgroundWorker": {
-    "message": "Der Hintergrundprozess der Erweiterung ist nicht erreichbar"
+    "message": "Erweiterung antwortet nicht – lade die Seite neu"
   },
   "errorNoApiKey": { "message": "Kein API-Schlüssel hinterlegt" },
-  "errorLostConnection": { "message": "Verbindung zur Erweiterung verloren" },
+  "errorLostConnection": { "message": "Verbindung verloren – versuch es noch mal" },
   "errorNetwork": { "message": "Netzwerkanfrage fehlgeschlagen" },
   "errorRequestStatus": { "message": "Anfrage fehlgeschlagen (Status $1)" },
   "errorNoBody": { "message": "Antwort ohne Inhalt" },

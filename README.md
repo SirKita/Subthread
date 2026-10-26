@@ -47,7 +47,7 @@ The extension's sole network destination is `https://api.anthropic.com`.
 ## Using it
 
 Select text in a Claude response on claude.ai → **Explain** streams immediately, **Ask** takes a
-question first. Ask follow-ups in the same popover. The toolbar icon (or the ↺ button in the
+question first. Ask follow-ups in the same popover. The toolbar icon (or the ☰ button in the
 popover) opens the saved history for the current conversation.
 
 Dev helpers: `Ctrl/Cmd+Shift+D` with a selection copies a structure-only DOM dump (lengths, never
