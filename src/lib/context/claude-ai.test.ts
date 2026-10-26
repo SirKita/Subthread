@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, it } from 'vitest';
-import { claudeAiAdapter, conversationIdFromPathname } from './claude-ai';
+import { claudeAiAdapter, conversationIdFromPathname, totalFromAriaLabel } from './claude-ai';
 
 // Minimal duck-typed Selection over real happy-dom nodes/Ranges (happy-dom's
 // window.getSelection() support is incomplete).
@@ -191,6 +191,54 @@ describe('claudeAiAdapter.extract (structured)', () => {
       ),
     );
     expect(userCtx!.containingMessage.role).toBe('user');
+  });
+});
+
+describe('position.total from a localized aria-label', () => {
+  const relabel = (feed: HTMLElement, label: (n: number) => string) => {
+    for (const article of Array.from(feed.querySelectorAll('[role="article"]'))) {
+      const n = /Message (\d+)/.exec(article.getAttribute('aria-label') ?? '')?.[1] ?? '0';
+      article.setAttribute('aria-label', label(Number(n)));
+    }
+  };
+
+  it('reads the total from "Nachricht N von M"', () => {
+    const feed = buildTranscript();
+    relabel(feed, (n) => `Nachricht ${n} von 32`);
+
+    const ctx = claudeAiAdapter.extract(
+      selectionOver(
+        textNodeIn(feed, '[data-index="30"] [data-testid="user-message"] p'),
+        'electrons escape',
+      ),
+    );
+
+    expect(ctx!.position).toEqual({ index: 30, total: 32, earliestRenderedIndex: 29 });
+  });
+
+  it('falls back to the rendered lower bound when the label has no numbers', () => {
+    const feed = buildTranscript();
+    feed.querySelector('[data-index="31"]')!.remove(); // rendered rows: 29, 30; true total 32
+    relabel(feed, () => 'Chat message');
+
+    const ctx = claudeAiAdapter.extract(
+      selectionOver(
+        textNodeIn(feed, '[data-index="30"] [data-testid="user-message"] p'),
+        'electrons escape',
+      ),
+    );
+
+    expect(ctx!.position).toEqual({ index: 30, total: 31, earliestRenderedIndex: 29 });
+  });
+
+  it('totalFromAriaLabel: English first, then any two integers, else undefined', () => {
+    expect(totalFromAriaLabel('Message 32 of 32')).toBe(32);
+    expect(totalFromAriaLabel('Message 3 of 10')).toBe(10);
+    expect(totalFromAriaLabel('Nachricht 32 von 32')).toBe(32);
+    expect(totalFromAriaLabel('Message 3 sur 10')).toBe(10);
+    expect(totalFromAriaLabel('Chat message')).toBeUndefined();
+    expect(totalFromAriaLabel('Message 7')).toBeUndefined();
+    expect(totalFromAriaLabel('')).toBeUndefined();
   });
 });
 

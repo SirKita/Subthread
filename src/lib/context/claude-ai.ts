@@ -149,11 +149,21 @@ function buildPosition(
     : index;
   // aria-label "Message N of M": N is 1-based, M is the true total.
   const ariaLabel = row.querySelector(S.article)?.getAttribute('aria-label') ?? '';
-  const match = /Message\s+\d+\s+of\s+(\d+)/i.exec(ariaLabel);
-  const total = match
-    ? Number.parseInt(match[1]!, 10)
-    : Math.max(...renderedRows.map((r) => r.index), index) + 1; // lower bound
+  const total =
+    totalFromAriaLabel(ariaLabel) ?? Math.max(...renderedRows.map((r) => r.index), index) + 1; // lower bound
   return { index, total, earliestRenderedIndex };
+}
+
+/**
+ * M from the article's "Message N of M" aria-label. claude.ai localizes the label
+ * ("Nachricht 32 von 32"), so after the English form any two integers count as N and M.
+ * Undefined when there are fewer than two integers; callers fall back to a lower bound.
+ */
+export function totalFromAriaLabel(ariaLabel: string): number | undefined {
+  const english = /Message\s+\d+\s+of\s+(\d+)/i.exec(ariaLabel);
+  if (english) return Number.parseInt(english[1]!, 10);
+  const integers = ariaLabel.match(/\d+/g);
+  return integers && integers.length >= 2 ? Number.parseInt(integers[1]!, 10) : undefined;
 }
 
 /** Role-appropriate text for a row, honoring the exclusion lists. */
