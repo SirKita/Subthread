@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Variant A — coil: 1.5 turns of a loose spiral, exiting as a straight strand to the lower-right.
-       Rules: two colours; every stroke 64 (1/8 canvas); round caps/joins; >= 1/10 margin. -->
-  <rect width="512" height="512" rx="113" fill="#5B2C1E"/>
-  <g fill="none" stroke="#FBF6EF" stroke-width="64" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 183.4 285.2 A 44 44 0 0 1 268.4 262.4 A 92 92 0 0 1 90.6 310 A 140 140 0 0 1 361.1 237.6 L 426.1 350.1"/>
-  </g>
-</svg>

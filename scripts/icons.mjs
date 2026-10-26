@@ -1,16 +1,18 @@
 // Render public/icon/source.svg to the four manifest PNG sizes.
-// Usage: pnpm icons                      → public/icon/{16,32,48,128}.png (the shipped icons)
-//        pnpm icons --preview [name...]  → public/icon/variants/preview.png: a contact sheet of
-//                                          public/icon/variants/<name>.svg (+ <name>-light.svg),
-//                                          all of them or only the names given, at 16 px (actual
-//                                          size and 4× nearest-neighbour zoom), 32 (actual and 2×),
-//                                          48 and 128 px on a light and a dark toolbar background,
-//                                          plus 16 px strips on #FFFFFF and #202124 (Chrome's
-//                                          toolbar colours).
-// Size gate: detail that only survives at larger sizes lives in a <g id="detail">…</g> group (no
-// nested groups). Renders below DETAIL_MIN_PX strip it and get the pure silhouette.
+// Rule: the 16 px icon is silhouette-only; detail appears at 32 px and up.
+// The source keeps its detail (inner ears, eyes) in a <g id="detail"> group with no nested groups;
+// renders below DETAIL_MIN_PX strip that group first, so 16.png can never drift from the silhouette.
+// Usage: pnpm icons                     → public/icon/{16,32,48,128}.png (the shipped icons)
+//        pnpm icons --preview [svg...]  → .output/icon-preview.png (gitignored): a contact sheet of
+//                                         the given SVG files (default: the shipped source) at 16 px
+//                                         (actual size and 4× nearest-neighbour zoom), 32 (actual
+//                                         and 2×), 48 and 128 px on a light and a dark toolbar
+//                                         background, plus 16 px strips on #FFFFFF and #202124
+//                                         (Chrome's toolbar colours). Judge candidates there before
+//                                         promoting one to source.svg.
 /* global Buffer */
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { basename, dirname } from 'node:path';
 import sharp from 'sharp';
 
 const SOURCE = 'public/icon/source.svg';
@@ -19,8 +21,7 @@ const SIZES = [16, 32, 48, 128];
 const DETAIL_MIN_PX = 32;
 const DETAIL_GROUP = /<g id="detail">[\s\S]*?<\/g>/;
 
-const VARIANTS_DIR = 'public/icon/variants';
-const PREVIEW = `${VARIANTS_DIR}/preview.png`;
+const PREVIEW = '.output/icon-preview.png';
 const CELL = 152; // grid cell in px; fits the 128 render with a gutter
 const LABEL_W = 88; // row-label column
 const HEAD_H = 44; // per-band header with column titles
@@ -32,7 +33,6 @@ const COLUMNS = [
   { size: 48, zoom: 1, title: '48' },
   { size: 128, zoom: 1, title: '128' },
 ];
-const THEMES = ['dark', 'light']; // <name>.svg is the dark-background icon, <name>-light.svg the inverted one
 const TOOLBARS = [
   { name: 'on a light toolbar', bg: '#f1f3f4', fg: '#202124' },
   { name: 'on a dark toolbar', bg: '#35363a', fg: '#e8eaed' },
@@ -68,21 +68,13 @@ async function renderShipped() {
   }
 }
 
-async function renderPreview(only) {
-  const files = await readdir(VARIANTS_DIR);
-  const all = files
-    .filter((file) => file.endsWith('.svg') && !file.endsWith('-light.svg'))
-    .map((file) => file.slice(0, -'.svg'.length))
-    .sort();
-  const missing = only.filter((name) => !all.includes(name));
-  if (missing.length > 0) throw new Error(`no such variant(s): ${missing.join(', ')}`);
-  const names = only.length > 0 ? only : all;
-  if (names.length === 0) throw new Error(`no variant SVGs in ${VARIANTS_DIR}`);
+async function renderPreview(svgFiles) {
+  const files = svgFiles.length > 0 ? svgFiles : [SOURCE];
+  const rows = files.map((file) => ({ file, label: basename(file).replace(/\.svg$/i, '') }));
 
   // One raster per (file, size), reused everywhere; zoomed cells are nearest-neighbour upscales.
   const rasters = new Map();
-  const raster = async (name, theme, size) => {
-    const file = `${VARIANTS_DIR}/${name}${theme === 'light' ? '-light' : ''}.svg`;
+  const raster = async (file, size) => {
     const key = `${file}@${size}`;
     if (!rasters.has(key)) rasters.set(key, await rasterize(file, size));
     return rasters.get(key);
@@ -90,9 +82,9 @@ async function renderPreview(only) {
   const zoom = (png, w, h) =>
     sharp(png).resize(w, h, { kernel: sharp.kernel.nearest }).png().toBuffer();
 
-  const width = LABEL_W + THEMES.length * COLUMNS.length * CELL + 16;
-  const bandHeight = HEAD_H + names.length * CELL;
-  const stripWidth = names.length * THEMES.length * (STRIP_ICON + STRIP_GAP) + STRIP_GAP;
+  const width = LABEL_W + COLUMNS.length * CELL + 16;
+  const bandHeight = HEAD_H + rows.length * CELL;
+  const stripWidth = rows.length * (STRIP_ICON + STRIP_GAP) + STRIP_GAP;
   const stripRow = STRIP_H * STRIP_ZOOM + 24;
   const stripsTop = TOOLBARS.length * bandHeight;
   const height = stripsTop + HEAD_H + STRIPS.length * stripRow;
@@ -108,31 +100,27 @@ async function renderPreview(only) {
       `<rect x="0" y="${top}" width="${width}" height="${bandHeight}" fill="${toolbar.bg}"/>`,
     );
     labels.push(text(12, top + 18, toolbar.name, toolbar.fg));
-    for (const [t, theme] of THEMES.entries()) {
-      for (const [c, column] of COLUMNS.entries()) {
-        const x = LABEL_W + (t * COLUMNS.length + c) * CELL;
-        const title = c === 0 ? `${theme} icon · ${column.title}` : column.title;
-        labels.push(text(x + CELL / 2, top + 36, title, toolbar.fg, 'middle'));
-      }
+    for (const [c, column] of COLUMNS.entries()) {
+      labels.push(
+        text(LABEL_W + c * CELL + CELL / 2, top + 36, column.title, toolbar.fg, 'middle'),
+      );
     }
-    for (const [row, name] of names.entries()) {
-      const rowTop = top + HEAD_H + row * CELL;
-      labels.push(text(12, rowTop + CELL / 2 + 5, name.toUpperCase(), toolbar.fg));
-      for (const [t, theme] of THEMES.entries()) {
-        for (const [c, column] of COLUMNS.entries()) {
-          const png = await raster(name, theme, column.size);
-          const px = column.size * column.zoom;
-          layers.push({
-            input: column.zoom === 1 ? png : await zoom(png, px, px),
-            left: Math.round(LABEL_W + (t * COLUMNS.length + c) * CELL + (CELL - px) / 2),
-            top: Math.round(rowTop + (CELL - px) / 2),
-          });
-        }
+    for (const [r, row] of rows.entries()) {
+      const rowTop = top + HEAD_H + r * CELL;
+      labels.push(text(12, rowTop + CELL / 2 + 5, row.label, toolbar.fg));
+      for (const [c, column] of COLUMNS.entries()) {
+        const png = await raster(row.file, column.size);
+        const px = column.size * column.zoom;
+        layers.push({
+          input: column.zoom === 1 ? png : await zoom(png, px, px),
+          left: Math.round(LABEL_W + c * CELL + (CELL - px) / 2),
+          top: Math.round(rowTop + (CELL - px) / 2),
+        });
       }
     }
   }
 
-  // Toolbar strips: every included icon at 16 px in a row, actual size on the left, 4× on the right.
+  // Toolbar strips: every file at 16 px in a row, actual size on the left, 4× on the right.
   const neutral = { bg: '#9e9e9e', fg: '#111111' };
   labels.push(
     `<rect x="0" y="${stripsTop}" width="${width}" height="${height - stripsTop}" fill="${neutral.bg}"/>`,
@@ -143,14 +131,12 @@ async function renderPreview(only) {
   for (const [s, strip] of STRIPS.entries()) {
     const top = stripsTop + HEAD_H + s * stripRow;
     const icons = [];
-    for (const [i, name] of names.entries()) {
-      for (const [t, theme] of THEMES.entries()) {
-        icons.push({
-          input: await raster(name, theme, STRIP_ICON),
-          left: STRIP_GAP + (i * THEMES.length + t) * (STRIP_ICON + STRIP_GAP),
-          top: (STRIP_H - STRIP_ICON) / 2,
-        });
-      }
+    for (const [r, row] of rows.entries()) {
+      icons.push({
+        input: await raster(row.file, STRIP_ICON),
+        left: STRIP_GAP + r * (STRIP_ICON + STRIP_GAP),
+        top: (STRIP_H - STRIP_ICON) / 2,
+      });
     }
     const stripPng = await sharp({
       create: { width: stripWidth, height: STRIP_H, channels: 4, background: strip.bg },
@@ -168,11 +154,12 @@ async function renderPreview(only) {
   }
 
   const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${labels.join('')}</svg>`;
+  await mkdir(dirname(PREVIEW), { recursive: true });
   await sharp({ create: { width, height, channels: 4, background: TOOLBARS[0].bg } })
     .composite([{ input: Buffer.from(overlay), left: 0, top: 0 }, ...layers])
     .png()
     .toFile(PREVIEW);
-  console.log(`wrote ${PREVIEW} (${names.join(', ')})`);
+  console.log(`wrote ${PREVIEW} (${rows.map((row) => row.label).join(', ')})`);
 }
 
 const args = process.argv.slice(2);

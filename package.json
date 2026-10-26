@@ -2,7 +2,7 @@
   "name": "subthread",
   "description": "Highlight a phrase on claude.ai and ask a side question without touching the conversation.",
   "private": true,
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "scripts": {
     "dev": "wxt",
