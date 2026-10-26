@@ -10,6 +10,14 @@
 //                                         background, plus 16 px strips on #FFFFFF and #202124
 //                                         (Chrome's toolbar colours). Judge candidates there before
 //                                         promoting one to source.svg.
+// Store assets, also written by `pnpm icons` — for the Chrome Web Store dashboard only, never
+// referenced from the manifest, and kept out of the build by the build:publicAssets hook in
+// wxt.config.ts:
+//   public/icon/store-128.png      → the full icon at 96×96 centred on a transparent 128×128 canvas
+//                                    (the store wants 96 px artwork with 16 px padding). The
+//                                    in-extension 128.png stays full-bleed: Chrome's own UI wants that.
+//   public/icon/promo-440x280.png  → small promo tile: the icon's background colour edge to edge,
+//                                    the cat mark centred at ~180 px tall, no text.
 /* global Buffer */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path';
@@ -20,6 +28,15 @@ const OUT_DIR = 'public/icon';
 const SIZES = [16, 32, 48, 128];
 const DETAIL_MIN_PX = 32;
 const DETAIL_GROUP = /<g id="detail">[\s\S]*?<\/g>/;
+
+const STORE_ICON = 'public/icon/store-128.png';
+const STORE_ICON_CANVAS = 128;
+const STORE_ICON_ART = 96; // leaves 16 px of transparent padding on each side
+const PROMO = 'public/icon/promo-440x280.png';
+const PROMO_W = 440;
+const PROMO_H = 280;
+const PROMO_MARK_H = 180;
+const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 
 const PREVIEW = '.output/icon-preview.png';
 const CELL = 152; // grid cell in px; fits the 128 render with a gutter
@@ -48,16 +65,18 @@ const STRIP_GAP = 12;
 const STRIP_ZOOM = 4;
 
 /**
- * Rasterize an SVG at `size` px to a PNG buffer: rendered at 8× and downsampled, exactly as the
- * shipped PNGs are. Below DETAIL_MIN_PX the detail group is stripped first (silhouette only).
+ * Rasterize SVG text at `size` px to a PNG buffer. Up to 128 px: rendered at 8× and downsampled,
+ * exactly as the shipped PNGs always were; larger sizes render at 2×. Below DETAIL_MIN_PX the
+ * detail group is stripped first (silhouette only).
  */
-async function rasterize(svgPath, size) {
-  const svg = await readFile(svgPath, 'utf8');
+function rasterizeSvg(svg, size) {
   const input = size < DETAIL_MIN_PX ? svg.replace(DETAIL_GROUP, '') : svg;
-  return sharp(Buffer.from(input), { density: 72 * (size / 128) * 8 })
-    .resize(size, size)
-    .png()
-    .toBuffer();
+  const density = size <= 128 ? 72 * (size / 128) * 8 : (72 * size * 2) / 384;
+  return sharp(Buffer.from(input), { density }).resize(size, size).png().toBuffer();
+}
+
+async function rasterize(svgPath, size) {
+  return rasterizeSvg(await readFile(svgPath, 'utf8'), size);
 }
 
 async function renderShipped() {
@@ -66,6 +85,42 @@ async function renderShipped() {
     await writeFile(`${OUT_DIR}/${size}.png`, await rasterize(SOURCE, size));
     console.log(`wrote ${OUT_DIR}/${size}.png`);
   }
+  await renderStoreAssets();
+}
+
+/** Dashboard-only artwork: the padded store icon and the small promo tile. */
+async function renderStoreAssets() {
+  const svg = await readFile(SOURCE, 'utf8');
+
+  const pad = (STORE_ICON_CANVAS - STORE_ICON_ART) / 2;
+  await sharp(await rasterizeSvg(svg, STORE_ICON_ART))
+    .extend({ top: pad, bottom: pad, left: pad, right: pad, background: TRANSPARENT })
+    .png()
+    .toFile(STORE_ICON);
+  console.log(`wrote ${STORE_ICON}`);
+
+  // The tile's colour is the icon's background rect; the mark is the source without that rect,
+  // trimmed to its bounds, scaled to PROMO_MARK_H and centred. Its detail cut-outs are in the same
+  // colour as the tile, so they read as cut-outs here too.
+  const background = /<rect[^>]*fill="(#[0-9a-fA-F]{6})"/.exec(svg)?.[1];
+  if (!background) throw new Error(`${SOURCE}: no background rect with a hex fill`);
+  const mark = await sharp(await rasterizeSvg(svg.replace(/<rect[^>]*\/>/, ''), 400))
+    .trim()
+    .resize({ height: PROMO_MARK_H })
+    .png()
+    .toBuffer();
+  const { width: markW = 0, height: markH = 0 } = await sharp(mark).metadata();
+  await sharp({ create: { width: PROMO_W, height: PROMO_H, channels: 4, background } })
+    .composite([
+      {
+        input: mark,
+        left: Math.round((PROMO_W - markW) / 2),
+        top: Math.round((PROMO_H - markH) / 2),
+      },
+    ])
+    .png()
+    .toFile(PROMO);
+  console.log(`wrote ${PROMO} (mark ${markW}×${markH} on ${background})`);
 }
 
 async function renderPreview(svgFiles) {

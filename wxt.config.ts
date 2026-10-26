@@ -20,11 +20,23 @@ const slimEnglishMessages = {
   },
 };
 
+// public/ is copied into the build wholesale; these are for the Chrome Web Store dashboard
+// (store icon, promo tile) or are design sources, and never ship inside the extension.
+const DASHBOARD_ONLY = new Set(['icon/store-128.png', 'icon/promo-440x280.png', 'icon/source.svg']);
+
 export default defineConfig({
   srcDir: 'src',
   vite: () => ({
     plugins: [preact(), slimEnglishMessages],
   }),
+  hooks: {
+    'build:publicAssets': (_wxt, files) => {
+      for (let i = files.length - 1; i >= 0; i--) {
+        const rel = files[i]!.relativeDest.replace(/\\/g, '/').replace(/^\.?\//, '');
+        if (DASHBOARD_ONLY.has(rel)) files.splice(i, 1);
+      }
+    },
+  },
   manifest: {
     // Name and description resolve from public/_locales/<lang>/messages.json; the English
     // values there must equal BRAND in src/lib/brand.ts (enforced by src/lib/i18n.test.ts).

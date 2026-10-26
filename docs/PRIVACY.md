@@ -1,11 +1,15 @@
 # Subthread — Privacy
 
+Last updated: 2026-10-26
+
 ## The short version
 
 Subthread lets you highlight a phrase on claude.ai and ask a quick side question
 about it. Everything it does happens between your browser and Anthropic's API,
 using your own API key. Nothing is ever sent to us — we don't run any servers,
 and there are no analytics, trackers, or telemetry of any kind.
+
+Subthread is not affiliated with Anthropic.
 
 ## What leaves your browser
 
@@ -49,4 +53,4 @@ other website.
 
 ## Questions
 
-Contact: see the support address on the store listing.
+Contact: nikitayentus@berkeley.edu
