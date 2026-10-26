@@ -1,0 +1,268 @@
+{
+  "appName": {
+    "message": "Subthread",
+    "description": "Extension name, shown in the browser toolbar and store. Product name: never translate. Must equal BRAND.name in src/lib/brand.ts."
+  },
+  "appDescription": {
+    "message": "Open a quick subthread about any highlighted phrase on claude.ai — ask a side question without derailing the conversation.",
+    "description": "One-sentence store/manifest description. Must equal BRAND.shortDescription in src/lib/brand.ts."
+  },
+
+  "toolbarExplain": {
+    "message": "Explain",
+    "description": "Button in the small toolbar that appears over a text selection. Streams an explanation of the highlight. Keep short."
+  },
+  "toolbarAsk": {
+    "message": "Ask",
+    "description": "Button in the selection toolbar. Opens the popover with a question input. Keep short."
+  },
+
+  "popoverBack": {
+    "message": "Back",
+    "description": "Tooltip/accessible name of the arrow button that returns from the history list to the thread."
+  },
+  "popoverHistory": {
+    "message": "History",
+    "description": "Header title of the history view and tooltip of the button that opens it."
+  },
+  "popoverSettings": {
+    "message": "Settings",
+    "description": "Tooltip/accessible name of the gear button that opens the extension's settings page."
+  },
+  "popoverClose": {
+    "message": "Close",
+    "description": "Tooltip/accessible name of the × button that closes the popover."
+  },
+  "popoverWaiting": {
+    "message": "Waiting for the answer",
+    "description": "Accessible name of the animated dots shown before the first words of an answer arrive."
+  },
+  "popoverAskPlaceholder": {
+    "message": "Ask about this…",
+    "description": "Placeholder of the question input when the thread is still empty (first question about the highlight)."
+  },
+  "popoverFollowUpPlaceholder": {
+    "message": "Ask a follow-up…",
+    "description": "Placeholder of the question input once at least one answer exists."
+  },
+  "popoverCopy": {
+    "message": "Copy",
+    "description": "Footer button: copy the last answer to the clipboard. Keep short."
+  },
+  "popoverCopyAnswer": {
+    "message": "Copy answer",
+    "description": "Tooltip/accessible name of the Copy button."
+  },
+  "popoverCopied": {
+    "message": "Copied",
+    "description": "Copy button label for 1.5 s after a successful copy."
+  },
+  "popoverCopyFailed": {
+    "message": "Copy failed",
+    "description": "Copy button label for 1.5 s after the clipboard write failed."
+  },
+  "popoverOpenSettings": {
+    "message": "Open settings",
+    "description": "Button under an API-key or credit error that opens the settings page."
+  },
+
+  "errorAuth": {
+    "message": "API key missing or invalid",
+    "description": "Error shown in the popover when the API rejects the key or none is configured."
+  },
+  "errorCredit": {
+    "message": "Out of API credits",
+    "description": "Error shown when the user's Anthropic account has no credit balance left."
+  },
+  "errorRateLimit": {
+    "message": "Rate limited — try again in a moment",
+    "description": "Error shown when the API returns a rate-limit response."
+  },
+  "errorUnreachable": {
+    "message": "Couldn't reach Claude — try again",
+    "description": "Error shown on network failures or server errors from the API."
+  },
+  "errorBackgroundWorker": {
+    "message": "Could not reach the extension background worker",
+    "description": "Error shown when the page cannot message the extension's own service worker (e.g. after an update)."
+  },
+  "errorNoApiKey": {
+    "message": "No API key configured",
+    "description": "Error message produced by the background worker when settings hold no API key; visible on the settings page's test result."
+  },
+  "errorLostConnection": {
+    "message": "Lost connection to the extension",
+    "description": "Error when the message channel to the background worker closes mid-answer."
+  },
+  "errorNetwork": {
+    "message": "Network request failed",
+    "description": "Generic message for a failed network request to the API."
+  },
+  "errorRequestStatus": {
+    "message": "Request failed with status $1",
+    "description": "Message for an API error response without its own message. $1 is the HTTP status code, e.g. 500."
+  },
+  "errorNoBody": {
+    "message": "Response had no body",
+    "description": "Message when the API answered without a response stream."
+  },
+  "errorStream": {
+    "message": "Stream reported an error",
+    "description": "Message when the API's event stream contains an error event without a message."
+  },
+
+  "historyEmpty": {
+    "message": "No side questions in this conversation yet.",
+    "description": "Empty state of the history list for the current claude.ai conversation."
+  },
+  "historyDelete": {
+    "message": "Delete",
+    "description": "Tooltip/accessible name of the × button next to one saved thread."
+  },
+  "historyClearConversation": {
+    "message": "Clear history for this conversation",
+    "description": "Full-width button under the history list that deletes every saved thread of the current conversation."
+  },
+
+  "timeJustNow": {
+    "message": "just now",
+    "description": "Relative time in the history list: less than a minute ago."
+  },
+  "timeMinutesAgo": {
+    "message": "$1m ago",
+    "description": "Relative time: $1 minutes ago, $1 is 1–59. Use an abbreviation that works for any count."
+  },
+  "timeHoursAgo": {
+    "message": "$1h ago",
+    "description": "Relative time: $1 hours ago, $1 is 1–23. Use an abbreviation that works for any count."
+  },
+  "timeYesterday": {
+    "message": "yesterday",
+    "description": "Relative time: about one day ago."
+  },
+  "timeDaysAgo": {
+    "message": "$1d ago",
+    "description": "Relative time: $1 days ago, $1 is always 2 or more."
+  },
+
+  "optionsTitle": {
+    "message": "$1 settings",
+    "description": "Browser tab title of the settings page. $1 is the product name (Subthread)."
+  },
+  "optionsIntro": {
+    "message": "Answers use your own Anthropic API key. It is stored locally and read only by this extension's background worker.",
+    "description": "Introductory note at the top of the settings page, followed by the 'Get an API key' link."
+  },
+  "optionsGetKey": {
+    "message": "Get an API key",
+    "description": "Link text to the Anthropic console page where API keys are created."
+  },
+  "optionsApiKey": {
+    "message": "API key",
+    "description": "Label of the API key input."
+  },
+  "optionsApiKeyPlaceholder": {
+    "message": "sk-ant-...",
+    "description": "Placeholder of the API key input: the prefix Anthropic keys start with. Keep as is."
+  },
+  "optionsShowKey": {
+    "message": "Show",
+    "description": "Button next to the API key input that reveals the key. Keep short."
+  },
+  "optionsHideKey": {
+    "message": "Hide",
+    "description": "Button next to the API key input that masks the key again. Keep short."
+  },
+  "optionsModel": {
+    "message": "Model",
+    "description": "Label of the model dropdown."
+  },
+  "optionsModelHaiku": {
+    "message": "Claude Haiku 5.5 — fast (default)",
+    "description": "Dropdown entry for the default, fastest model. Keep the model name."
+  },
+  "optionsModelSonnet": {
+    "message": "Claude Sonnet 5.5 — smarter, slower",
+    "description": "Dropdown entry for the larger model. Keep the model name."
+  },
+  "optionsContext": {
+    "message": "Conversation context",
+    "description": "Label of the slider that sets how much conversation text is sent with each question."
+  },
+  "optionsContextLess": {
+    "message": "Less",
+    "description": "Label at the left end of the context slider. Keep very short."
+  },
+  "optionsContextMore": {
+    "message": "More",
+    "description": "Label at the right end of the context slider. Keep very short."
+  },
+  "optionsContextTokens": {
+    "message": "$1 tokens",
+    "description": "Current slider value. $1 is a formatted number, e.g. 8,000. 'Tokens' is the API's unit of text."
+  },
+  "optionsContextHelp": {
+    "message": "How much of the conversation is sent with each side question. More gives better answers on long threads and costs slightly more.",
+    "description": "Help text under the context slider."
+  },
+  "optionsSave": {
+    "message": "Save",
+    "description": "Primary button that stores the settings. Keep short."
+  },
+  "optionsSaved": {
+    "message": "Saved",
+    "description": "Confirmation shown next to the Save button for two seconds."
+  },
+  "optionsTest": {
+    "message": "Test connection",
+    "description": "Button that sends a tiny request to the API with the saved key."
+  },
+  "optionsTesting": {
+    "message": "Testing…",
+    "description": "Label of the test button while the request is running."
+  },
+  "optionsTestOk": {
+    "message": "OK — $1",
+    "description": "Successful test result. $1 is the model id, e.g. claude-haiku-5-5; the model's reply follows in quotes."
+  },
+  "optionsTestSample": {
+    "message": "“$1”",
+    "description": "The model's short reply after a successful test, in the locale's quotation marks. $1 is the reply."
+  },
+  "optionsHistory": {
+    "message": "History",
+    "description": "Heading of the settings section about saved side questions."
+  },
+  "optionsHistoryCounting": {
+    "message": "Counting saved side questions…",
+    "description": "Shown while the number of saved threads is being read."
+  },
+  "optionsHistoryCountOne": {
+    "message": "1 saved side question.",
+    "description": "Count of saved threads when it is exactly one."
+  },
+  "optionsHistoryCountMany": {
+    "message": "$1 saved side questions.",
+    "description": "Count of saved threads for zero or two and more. $1 is the number."
+  },
+  "optionsHistoryLocal": {
+    "message": "Stored only on this device.",
+    "description": "Note after the count: history never leaves the device."
+  },
+  "optionsClearConfirm": {
+    "message": "Delete all saved side questions?",
+    "description": "Confirmation question shown before clearing the whole history."
+  },
+  "optionsClearYes": {
+    "message": "Yes, clear everything",
+    "description": "Destructive confirm button for clearing the whole history."
+  },
+  "optionsCancel": {
+    "message": "Cancel",
+    "description": "Button that dismisses the clear-history confirmation."
+  },
+  "optionsClearAll": {
+    "message": "Clear all history",
+    "description": "Button in the History section that starts the clear-everything confirmation."
+  }
+}

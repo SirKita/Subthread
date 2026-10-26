@@ -1,3 +1,5 @@
+import { t } from '../i18n';
+
 export type ApiErrorKind = 'auth' | 'rate_limit' | 'credit' | 'server' | 'network' | 'unknown';
 
 export class ApiError extends Error {
@@ -14,7 +16,7 @@ export class ApiError extends Error {
 
 /** Map a non-2xx response from the Messages API to an ApiError. */
 export function apiErrorFromResponse(status: number, body: string): ApiError {
-  const message = extractMessage(body) ?? `Request failed with status ${status}`;
+  const message = extractMessage(body) ?? t('errorRequestStatus', String(status));
   if (status === 401) return new ApiError('auth', message, status);
   if (status === 429) return new ApiError('rate_limit', message, status);
   if (status === 400 && /credit balance/i.test(body))
@@ -27,7 +29,7 @@ export function apiErrorFromResponse(status: number, body: string): ApiError {
 export function toApiError(err: unknown): ApiError {
   if (err instanceof ApiError) return err;
   if (err instanceof TypeError) {
-    return new ApiError('network', err.message || 'Network request failed');
+    return new ApiError('network', err.message || t('errorNetwork'));
   }
   return new ApiError('unknown', err instanceof Error ? err.message : String(err));
 }

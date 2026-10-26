@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { BRAND } from '../../lib/brand';
 import { clearAll, countAll } from '../../lib/history/store';
+import { t, uiLanguage, type MessageKey } from '../../lib/i18n';
 import { sendTestConnection } from '../../lib/messaging/protocol';
 import {
   CONTEXT_LEVELS,
@@ -11,9 +12,9 @@ import {
   tokensForContextLevel,
 } from '../../lib/storage/settings';
 
-const MODELS = [
-  { id: 'claude-haiku-5-5', label: 'Claude Haiku 5.5 — fast (default)' },
-  { id: 'claude-sonnet-5-5', label: 'Claude Sonnet 5.5 — smarter, slower' },
+const MODELS: ReadonlyArray<{ id: string; label: MessageKey }> = [
+  { id: 'claude-haiku-5-5', label: 'optionsModelHaiku' },
+  { id: 'claude-sonnet-5-5', label: 'optionsModelSonnet' },
 ];
 
 type TestState =
@@ -63,48 +64,49 @@ export function App() {
     }
   }
 
+  const contextTokens = tokensForContextLevel(contextLevelForTokens(maxContextTokens));
+
   return (
     <main class="settings">
       <h1>{BRAND.name}</h1>
       <p class="hint">
-        Answers use your own Anthropic API key. It is stored locally and read only by this
-        extension&apos;s background worker.{' '}
+        {t('optionsIntro')}{' '}
         <a href="https://platform.claude.com/settings/keys" target="_blank" rel="noreferrer">
-          Get an API key
+          {t('optionsGetKey')}
         </a>
       </p>
 
       <label>
-        API key
+        {t('optionsApiKey')}
         <span class="key-row">
           <input
             type={showKey ? 'text' : 'password'}
             value={apiKey}
-            placeholder="sk-ant-..."
+            placeholder={t('optionsApiKeyPlaceholder')}
             autocomplete="off"
             onInput={(e) => setApiKey(e.currentTarget.value)}
           />
           <button type="button" onClick={() => setShowKey(!showKey)}>
-            {showKey ? 'Hide' : 'Show'}
+            {showKey ? t('optionsHideKey') : t('optionsShowKey')}
           </button>
         </span>
       </label>
 
       <label>
-        Model
+        {t('optionsModel')}
         <select value={model} onInput={(e) => setModel(e.currentTarget.value)}>
           {MODELS.map((m) => (
             <option key={m.id} value={m.id}>
-              {m.label}
+              {t(m.label)}
             </option>
           ))}
         </select>
       </label>
 
       <label>
-        Conversation context
+        {t('optionsContext')}
         <span class="slider-row">
-          <span class="slider-end">Less</span>
+          <span class="slider-end">{t('optionsContextLess')}</span>
           <input
             type="range"
             min={0}
@@ -115,35 +117,32 @@ export function App() {
               setMaxContextTokens(tokensForContextLevel(Number(e.currentTarget.value)))
             }
           />
-          <span class="slider-end">More</span>
+          <span class="slider-end">{t('optionsContextMore')}</span>
         </span>
         <span class="help tokens">
-          {tokensForContextLevel(contextLevelForTokens(maxContextTokens)).toLocaleString('en-US')}{' '}
-          tokens
+          {t('optionsContextTokens', contextTokens.toLocaleString(uiLanguage()))}
         </span>
-        <span class="help">
-          How much of the conversation is sent with each side question. More gives better answers on
-          long threads and costs slightly more.
-        </span>
+        <span class="help">{t('optionsContextHelp')}</span>
       </label>
 
       <div class="actions">
         <button type="button" class="primary" onClick={() => void save()}>
-          Save
+          {t('optionsSave')}
         </button>
         <button
           type="button"
           onClick={() => void testConnection()}
           disabled={test.phase === 'testing'}
         >
-          {test.phase === 'testing' ? 'Testing…' : 'Test connection'}
+          {test.phase === 'testing' ? t('optionsTesting') : t('optionsTest')}
         </button>
-        {saved && <span class="status ok">Saved</span>}
+        {saved && <span class="status ok">{t('optionsSaved')}</span>}
       </div>
 
       {test.phase === 'ok' && (
         <p class="status ok">
-          OK — {test.model} <span class="sample">“{test.sample}”</span>
+          {t('optionsTestOk', test.model)}{' '}
+          <span class="sample">{t('optionsTestSample', test.sample)}</span>
         </p>
       )}
       {test.phase === 'error' && (
@@ -153,29 +152,29 @@ export function App() {
       )}
 
       <section class="history-section">
-        <h2>History</h2>
+        <h2>{t('optionsHistory')}</h2>
         <p class="hint">
           {historyCount === null
-            ? 'Counting saved side questions…'
+            ? t('optionsHistoryCounting')
             : historyCount === 1
-              ? '1 saved side question.'
-              : `${historyCount} saved side questions.`}{' '}
-          Stored only on this device.
+              ? t('optionsHistoryCountOne')
+              : t('optionsHistoryCountMany', String(historyCount))}{' '}
+          {t('optionsHistoryLocal')}
         </p>
         {confirmClear ? (
           <div class="actions">
-            <span>Delete all saved side questions?</span>
+            <span>{t('optionsClearConfirm')}</span>
             <button type="button" class="danger" onClick={() => void clearHistory()}>
-              Yes, clear everything
+              {t('optionsClearYes')}
             </button>
             <button type="button" onClick={() => setConfirmClear(false)}>
-              Cancel
+              {t('optionsCancel')}
             </button>
           </div>
         ) : (
           <div class="actions">
             <button type="button" onClick={() => setConfirmClear(true)} disabled={!historyCount}>
-              Clear all history
+              {t('optionsClearAll')}
             </button>
           </div>
         )}

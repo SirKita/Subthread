@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 import { ApiError, apiErrorFromResponse, toApiError } from './errors';
 import { parseSse } from './sse';
 
@@ -62,7 +63,7 @@ export async function* streamMessage(
     });
   } catch (err) {
     if (isAbortError(err)) return;
-    throw new ApiError('network', err instanceof Error ? err.message : 'Network request failed');
+    throw new ApiError('network', err instanceof Error ? err.message : t('errorNetwork'));
   }
 
   if (!response.ok) {
@@ -70,7 +71,7 @@ export async function* streamMessage(
     throw apiErrorFromResponse(response.status, text);
   }
   if (!response.body) {
-    throw new ApiError('unknown', 'Response had no body');
+    throw new ApiError('unknown', t('errorNoBody'));
   }
 
   let usage: { input_tokens: number; output_tokens: number } | undefined;
@@ -110,7 +111,7 @@ export async function* streamMessage(
         case 'error':
           throw new ApiError(
             payload.error?.type === 'overloaded_error' ? 'server' : 'unknown',
-            payload.error?.message ?? 'Stream reported an error',
+            payload.error?.message ?? t('errorStream'),
           );
         // ping / content_block_start / content_block_stop are intentionally ignored
       }

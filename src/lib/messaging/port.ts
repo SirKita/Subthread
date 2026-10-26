@@ -1,4 +1,5 @@
 import type { StreamParams } from '../api/claude-client';
+import { t } from '../i18n';
 import { PORT_NAME } from './protocol';
 import type { AskMessage, BackgroundToContent, ErrorMessage } from './protocol';
 
@@ -41,7 +42,7 @@ export function streamAsk(
   port.onDisconnect.addListener(() => {
     if (settled) return;
     settled = true;
-    callbacks.onError({ kind: 'network', message: 'Lost connection to the extension' });
+    callbacks.onError({ kind: 'network', message: t('errorLostConnection') });
   });
 
   const ask: AskMessage = { type: 'ask', requestId, ...request };

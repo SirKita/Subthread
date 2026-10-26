@@ -12,14 +12,15 @@ export const DEFAULT_SETTINGS: Settings = {
 
 const STORAGE_KEY = 'settings';
 
-// User-facing "Conversation context" slider stops; Settings.maxContextTokens
-// stays numeric for compatibility, the options page maps it to the nearest stop.
-export const CONTEXT_LEVELS: ReadonlyArray<{ tokens: number; label?: string }> = [
-  { tokens: 2000, label: 'Less' },
+// "Conversation context" slider stops (the options page labels the ends via i18n);
+// Settings.maxContextTokens stays numeric for compatibility, the options page maps
+// it to the nearest stop.
+export const CONTEXT_LEVELS: ReadonlyArray<{ tokens: number }> = [
+  { tokens: 2000 },
   { tokens: 4000 },
-  { tokens: 8000, label: 'Standard' },
+  { tokens: 8000 },
   { tokens: 16000 },
-  { tokens: 32000, label: 'More' },
+  { tokens: 32000 },
 ];
 
 /** Index of the nearest level for a stored token count; ties round up. */

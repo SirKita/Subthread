@@ -6,6 +6,7 @@ import type { ExtractedContext } from '../lib/context/adapter';
 import type { SideExchange } from '../lib/context/budget';
 import { conversationIdFromPathname } from '../lib/context/claude-ai';
 import { saveThread, type SavedThread } from '../lib/history/store';
+import { t } from '../lib/i18n';
 import { streamAsk } from '../lib/messaging/port';
 import type { ErrorMessage } from '../lib/messaging/protocol';
 import { sendGetConfig, sendOpenOptions } from '../lib/messaging/protocol';
@@ -94,7 +95,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
       });
     } catch {
       setThread((prev) => prev.slice(0, -1));
-      setError({ kind: 'unknown', message: 'Could not reach the extension background worker' });
+      setError({ kind: 'unknown', message: t('errorBackgroundWorker') });
       setStatus('error');
     }
   };
@@ -314,22 +315,22 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
           <button
             type="button"
             class="st-icon"
-            title="Back"
-            aria-label="Back"
+            title={t('popoverBack')}
+            aria-label={t('popoverBack')}
             onClick={() => setView('thread')}
           >
             ←
           </button>
         )}
         <span class="st-highlight" title={headerText}>
-          {view === 'history' ? 'History' : headerText}
+          {view === 'history' ? t('popoverHistory') : headerText}
         </span>
         {view === 'thread' && (
           <button
             type="button"
             class="st-icon"
-            title="History"
-            aria-label="History"
+            title={t('popoverHistory')}
+            aria-label={t('popoverHistory')}
             onClick={() => setView('history')}
           >
             ☰
@@ -338,13 +339,19 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
         <button
           type="button"
           class="st-icon"
-          title="Settings"
-          aria-label="Settings"
+          title={t('popoverSettings')}
+          aria-label={t('popoverSettings')}
           onClick={() => sendOpenOptions()}
         >
           ⚙
         </button>
-        <button type="button" class="st-close" title="Close" aria-label="Close" onClick={onClose}>
+        <button
+          type="button"
+          class="st-close"
+          title={t('popoverClose')}
+          aria-label={t('popoverClose')}
+          onClick={onClose}
+        >
           ×
         </button>
       </header>
@@ -364,7 +371,7 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
             ))}
 
             {status === 'waiting' && (
-              <div class="st-pending" role="status" aria-label="Waiting for the answer">
+              <div class="st-pending" role="status" aria-label={t('popoverWaiting')}>
                 <span class="st-dot" />
                 <span class="st-dot" />
                 <span class="st-dot" />
@@ -381,7 +388,9 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
                 ref={inputRef}
                 class="st-question"
                 type="text"
-                placeholder={thread.length === 0 ? 'Ask about this…' : 'Ask a follow-up…'}
+                placeholder={
+                  thread.length === 0 ? t('popoverAskPlaceholder') : t('popoverFollowUpPlaceholder')
+                }
               />
             )}
           </div>
@@ -391,12 +400,16 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
               {/* Aborting mid-stream is Escape or ×; both unmount/close and cancel the request. */}
               <button
                 type="button"
-                title="Copy answer"
-                aria-label="Copy answer"
+                title={t('popoverCopyAnswer')}
+                aria-label={t('popoverCopyAnswer')}
                 disabled={copyState !== 'idle'}
                 onClick={copyAnswer}
               >
-                {copyState === 'idle' ? 'Copy' : copyState === 'copied' ? 'Copied' : 'Copy failed'}
+                {copyState === 'idle'
+                  ? t('popoverCopy')
+                  : copyState === 'copied'
+                    ? t('popoverCopied')
+                    : t('popoverCopyFailed')}
               </button>
             </footer>
           )}
@@ -413,7 +426,7 @@ function ErrorView({ error }: { error: StreamError }) {
       <p>{text}</p>
       {settings && (
         <button type="button" onClick={() => sendOpenOptions()}>
-          Open settings
+          {t('popoverOpenSettings')}
         </button>
       )}
     </div>
@@ -423,15 +436,16 @@ function ErrorView({ error }: { error: StreamError }) {
 function friendlyError(error: StreamError): { text: string; settings: boolean } {
   switch (error.kind) {
     case 'auth':
-      return { text: 'API key missing or invalid', settings: true };
+      return { text: t('errorAuth'), settings: true };
     case 'credit':
-      return { text: 'Out of API credits', settings: true };
+      return { text: t('errorCredit'), settings: true };
     case 'rate_limit':
-      return { text: 'Rate limited — try again in a moment', settings: false };
+      return { text: t('errorRateLimit'), settings: false };
     case 'network':
     case 'server':
-      return { text: "Couldn't reach Claude — try again", settings: false };
+      return { text: t('errorUnreachable'), settings: false };
     default:
+      // The API's own message (already localized by us when it is ours, e.g. errorNoBody).
       return { text: error.message, settings: false };
   }
 }

@@ -1,3 +1,4 @@
+import { t } from '../lib/i18n';
 import { isEditableTarget } from './dom';
 import type { AnchorRect } from './types';
 
@@ -31,10 +32,10 @@ export function Toolbar({ rect, onExplain, onAsk }: Props) {
       }}
     >
       <button type="button" onClick={onExplain}>
-        Explain
+        {t('toolbarExplain')}
       </button>
       <button type="button" onClick={onAsk}>
-        Ask
+        {t('toolbarAsk')}
       </button>
     </div>
   );

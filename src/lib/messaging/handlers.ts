@@ -1,5 +1,6 @@
 import { streamMessage } from '../api/claude-client';
 import { toApiError } from '../api/errors';
+import { t } from '../i18n';
 import { getSettings } from '../storage/settings';
 import type {
   AskMessage,
@@ -22,7 +23,7 @@ export async function handleAsk(
       post({
         type: 'error',
         requestId: msg.requestId,
-        error: { kind: 'auth', message: 'No API key configured' },
+        error: { kind: 'auth', message: t('errorNoApiKey') },
       });
       return;
     }
@@ -66,7 +67,7 @@ export async function handleTestConnection(): Promise<TestConnectionResponse> {
     if (!settings.apiKey) {
       return {
         ok: false,
-        error: { kind: 'auth', message: 'No API key configured' },
+        error: { kind: 'auth', message: t('errorNoApiKey') },
       };
     }
     let sample = '';
