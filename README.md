@@ -53,3 +53,22 @@ popover) opens the saved history for the current conversation.
 Dev helpers: `Ctrl/Cmd+Shift+D` with a selection copies a structure-only DOM dump (lengths, never
 text) for selector calibration; set `DEBUG = true` in `src/entrypoints/claude.content.ts` or
 `src/ui/input-guard.ts` for verbose logging with a `[subthread]` prefix.
+
+## Testing a locale
+
+The UI follows the browser's UI language (`chrome.i18n`). English and German ship today, in
+`public/_locales/<lang>/messages.json`; answers themselves follow the conversation's language, not
+the browser's. To check a locale, start Chrome in that language and load the unpacked build:
+
+- Windows: `chrome.exe --lang=de --user-data-dir=%TEMP%\chrome-de` (a fresh profile, so the
+  language is not cached from an earlier run)
+- Linux: `google-chrome --lang=de --user-data-dir=/tmp/chrome-de`
+- macOS ignores `--lang`: set the system language under System Settings → General → Language &
+  Region and restart Chrome
+- `pnpm dev`: add `webExt: { chromiumArgs: ['--lang=de'] }` to `wxt.config.ts` (or to a local
+  `web-ext.config.ts`) for the temporary profile it launches
+
+Both surfaces must switch: the options page (tab title, labels, help text, buttons) and the content
+UI on claude.ai (toolbar, popover placeholders and tooltips, history list, error messages). A key
+missing from the active locale falls back to English and, in dev builds, logs one
+`[subthread] i18n` warning per key in the console.
