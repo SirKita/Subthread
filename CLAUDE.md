@@ -21,7 +21,10 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
 
 ## Repo map
 
-- `wxt.config.ts` — manifest: name/description from `src/lib/brand.ts`, permissions, icons.
+- `wxt.config.ts` — manifest: name/description via `__MSG_appName__`/`__MSG_appDescription__`
+  (`default_locale` en), permissions, icons; a Vite `load` hook slims the bundled English fallback.
+- `public/_locales/<lang>/messages.json` — every user-visible string (en, de). `src/lib/i18n.ts` —
+  `t(key, substitutions?)` over `chrome.i18n` with typed keys and an English fallback.
 - `package.json` — scripts: `dev`, `build`, `zip`, `check` (typecheck + lint + test), `icons`.
 - `src/entrypoints/background.ts` — service worker: streaming port, one-shot messages, action click.
 - `src/entrypoints/claude.content.ts` — content script on `https://claude.ai/*`: mounts the
@@ -36,7 +39,8 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
   stream client), `handlers.ts` (background-side handlers).
 - `src/lib/storage/settings.ts` — settings and context levels. `src/lib/history/store.ts` —
   saved threads, 50 per conversation, 300 total.
-- `src/lib/brand.ts` — the only place the product name lives.
+- `src/lib/brand.ts` — source of the product name; `appName`/`appDescription` in `_locales/en` must
+  equal it (`i18n.test.ts` enforces).
 - `src/ui/` — `App.tsx` (selection → toolbar → popover orchestration), `Toolbar.tsx`,
   `Popover.tsx` (streaming, follow-ups, drag, history view), `HistoryList.tsx`,
   `input-guard.ts`, `dom.ts` (shadow-DOM event helpers), `position.ts`, `styles.css`.
@@ -81,13 +85,20 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
 - **Follow-ups switch to the ask prompt.** `buildRequest` uses the `ask` system prompt whenever
   the side thread is non-empty, even if the popover opened in Explain mode. The first exchange
   is embedded in the context message; later exchanges alternate as user/assistant turns.
+- **`MessageKey` is `keyof` a typed JSON import** of `_locales/en/messages.json`, so a typo fails
+  typecheck with no generator to keep in sync. `t()` returns English when `chrome.i18n` has no
+  message for the key, or when there is no `chrome.i18n` at all (unit tests). Relative times are
+  plural-safe by construction: unit abbreviations, a separate "yesterday", days only for 2+.
 
 ## Workflow
 
 - `pnpm check` (typecheck + lint + test) must pass before every commit.
 - One commit per brief item. Prefixes as in history: `feat(popover):`, `fix:`, `docs:`, `chore:`.
 - `DEBUG` flags in `claude.content.ts` and `input-guard.ts` stay `false` in commits.
-- Git tags `phase-0` … `phase-3.1` mark accepted states. A tag may be moved only for a hotfix to
+- No user-visible string literals in `src/`: add the string to `public/_locales/en/messages.json`
+  (with a translator description) and use `t()`. Every locale file must carry the full key set;
+  `i18n.test.ts` fails otherwise. Prompts in `prompts.ts` are not UI strings and stay English.
+- Git tags `phase-0` … `phase-4` mark accepted states. A tag may be moved only for a hotfix to
   that same phase before the next phase starts; after that it is frozen.
 - Status reports go to the CTO with these sections in order: files changed (one line each);
   new/changed exported signatures; test results; deviations from the brief and why;
@@ -100,5 +111,4 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
 
 - `zod` at the message boundary (`protocol.ts` messages are cast, not validated).
 - `@floating-ui/dom` for placement (hand-rolled today in `Popover.tsx`, `Toolbar.tsx`, `position.ts`).
-- Localized `aria-label` for `position.total`.
 - Passive row cache for the virtualized transcript: backlog, not planned.
