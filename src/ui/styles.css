@@ -361,3 +361,48 @@
     border-color: rgba(255, 255, 255, 0.24);
   }
 }
+
+/* Web search: label beside the dots while searching; cited domains under an answer. */
+.st-searching {
+  margin-left: 6px;
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+.st-sources {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.75;
+  overflow-wrap: anywhere;
+}
+
+.st-sources-label {
+  margin-right: 6px;
+}
+
+.st-sources-label::after {
+  content: ':';
+}
+
+.st-sources a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
+}
+
+.st-sources a:hover {
+  text-decoration-color: currentColor;
+}
+
+.st-sources a + a::before {
+  content: '·';
+  margin: 0 6px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+@media (prefers-color-scheme: dark) {
+  .st-sources a {
+    text-decoration-color: rgba(255, 255, 255, 0.35);
+  }
+}

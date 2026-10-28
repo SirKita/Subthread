@@ -2,12 +2,15 @@ export interface Settings {
   apiKey: string;
   model: string;
   maxContextTokens: number;
+  /** Offer the model Anthropic's server-side web search for side questions. */
+  webSearch: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   apiKey: '',
   model: 'claude-haiku-5-5',
   maxContextTokens: 8000,
+  webSearch: true,
 };
 
 const STORAGE_KEY = 'settings';

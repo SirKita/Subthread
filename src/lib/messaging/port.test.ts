@@ -56,9 +56,37 @@ describe('streamAsk', () => {
     port.emit({ type: 'done', requestId: ask.requestId });
 
     expect(cb.onDelta).toHaveBeenCalledExactlyOnceWith('Hel');
-    expect(cb.onDone).toHaveBeenCalledOnce();
+    expect(cb.onDone).toHaveBeenCalledExactlyOnceWith([]);
     expect(cb.onError).not.toHaveBeenCalled();
     expect(port.disconnect).toHaveBeenCalledOnce();
+  });
+
+  it('forwards searching and hands the cited sources to onDone', () => {
+    const port = makeFakePort();
+    chrome.runtime.connect = (() => port) as unknown as typeof chrome.runtime.connect;
+    const cb = { ...callbacks(), onSearching: vi.fn() };
+
+    streamAsk(REQUEST, cb);
+    const ask = port.posted[0] as AskMessage;
+    const sources = [{ url: 'https://example.com/a', title: 'A' }];
+
+    port.emit({ type: 'searching', requestId: ask.requestId });
+    port.emit({ type: 'delta', requestId: ask.requestId, text: 'Found it.' });
+    port.emit({ type: 'done', requestId: ask.requestId, sources });
+
+    expect(cb.onSearching).toHaveBeenCalledOnce();
+    expect(cb.onDelta).toHaveBeenCalledExactlyOnceWith('Found it.');
+    expect(cb.onDone).toHaveBeenCalledExactlyOnceWith(sources);
+  });
+
+  it('tolerates a searching message when no onSearching callback is given', () => {
+    const port = makeFakePort();
+    chrome.runtime.connect = (() => port) as unknown as typeof chrome.runtime.connect;
+    const cb = callbacks();
+
+    streamAsk(REQUEST, cb);
+    const ask = port.posted[0] as AskMessage;
+    expect(() => port.emit({ type: 'searching', requestId: ask.requestId })).not.toThrow();
   });
 
   it('abort (the close/Escape path) sends the abort message, disconnects, and silences callbacks', () => {

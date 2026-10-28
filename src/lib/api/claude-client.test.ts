@@ -100,7 +100,7 @@ describe('streamMessage', () => {
     expect(events).toEqual([
       { type: 'text', text: 'Hel' },
       { type: 'text', text: 'lo' },
-      { type: 'done', usage: { input_tokens: 12, output_tokens: 5 } },
+      { type: 'done', usage: { input_tokens: 12, output_tokens: 5 }, sources: [] },
     ]);
   });
 
@@ -166,7 +166,7 @@ describe('streamMessage', () => {
     const events = await collect();
     expect(events).toEqual([
       { type: 'text', text: 'Answer.' },
-      { type: 'done', usage: { input_tokens: 20, output_tokens: 11 } },
+      { type: 'done', usage: { input_tokens: 20, output_tokens: 11 }, sources: [] },
     ]);
   });
 

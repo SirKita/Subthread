@@ -65,6 +65,14 @@
     "message": "Open settings",
     "description": "Button under an API-key or credit error that opens the settings page."
   },
+  "popoverSearching": {
+    "message": "Searching the web…",
+    "description": "Small label next to the animated dots while the model runs a web search. Keep short."
+  },
+  "popoverSources": {
+    "message": "Sources",
+    "description": "Label before the cited web pages (shown as domain-name links) under an answer that used web search. Keep short."
+  },
 
   "errorAuth": {
     "message": "API key missing or invalid",
@@ -109,6 +117,10 @@
   "errorStream": {
     "message": "Stream reported an error",
     "description": "Message when the API's event stream contains an error event without a message."
+  },
+  "errorWebSearchUnavailable": {
+    "message": "Web search isn't available for this model or key",
+    "description": "Error shown when the API rejects the web search tool (HTTP 400). The user can turn web search off in settings."
   },
 
   "historyEmpty": {
@@ -204,6 +216,14 @@
   "optionsContextHelp": {
     "message": "How much of the conversation is sent with each side question. More gives better answers on long threads and costs slightly more.",
     "description": "Help text under the context slider."
+  },
+  "optionsWebSearch": {
+    "message": "Allow web search for side questions",
+    "description": "Checkbox label on the settings page. Enables Anthropic's server-side web search for answers."
+  },
+  "optionsWebSearchHelp": {
+    "message": "Lets answers include current information when the question needs it. Searches cost about a cent each with your API key.",
+    "description": "Help text under the web search checkbox."
   },
   "optionsSave": {
     "message": "Save",

@@ -16,6 +16,7 @@ describe('settings', () => {
       apiKey: '',
       model: 'claude-haiku-5-5',
       maxContextTokens: 8000,
+      webSearch: true,
     });
   });
 
@@ -28,6 +29,7 @@ describe('settings', () => {
       apiKey: 'sk-ant-test',
       model: DEFAULT_SETTINGS.model,
       maxContextTokens: 4000,
+      webSearch: true,
     });
   });
 
@@ -41,6 +43,7 @@ describe('settings', () => {
       apiKey: 'sk-ant-live',
       model: DEFAULT_SETTINGS.model,
       maxContextTokens: DEFAULT_SETTINGS.maxContextTokens,
+      webSearch: true,
     });
 
     unsubscribe();

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import type { Source } from '../lib/api/claude-client';
 import type { Mode } from '../lib/api/prompts';
 import { buildRequest } from '../lib/api/prompts';
 import { BRAND } from '../lib/brand';
@@ -14,6 +15,7 @@ import { eventTargetElement, isEditableTarget, isWithin } from './dom';
 import { HistoryList } from './HistoryList';
 import { installInputGuard } from './input-guard';
 import { clampToViewport } from './position';
+import { domainOf, MAX_SOURCES_SHOWN } from './sources';
 import type { AnchorRect } from './types';
 
 const MARGIN = 12;
@@ -47,6 +49,8 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
   // The side thread: completed exchanges plus (while streaming) the pending one.
   const [thread, setThread] = useState<SideExchange[]>([]);
   const [error, setError] = useState<StreamError | null>(null);
+  // True between a "searching" event and the next text delta (or done/error).
+  const [searching, setSearching] = useState(false);
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
   const abortRef = useRef<(() => void) | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -68,12 +72,14 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
     streamedRef.current = true;
     setStatus('waiting');
     setError(null);
+    setSearching(false);
     setThread([...completed, { question: askQuestion, answer: '' }]);
     try {
       const config = await sendGetConfig();
       const request = buildRequest(ctx, mode, askQuestion, config.maxContextTokens, completed);
       abortRef.current = streamAsk(request, {
         onDelta: (text) => {
+          setSearching(false);
           setStatus('streaming');
           setThread((prev) => {
             const next = [...prev];
@@ -82,12 +88,23 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
             return next;
           });
         },
-        onDone: () => {
+        onSearching: () => setSearching(true),
+        onDone: (sources) => {
           abortRef.current = null;
+          setSearching(false);
+          if (sources.length > 0) {
+            setThread((prev) => {
+              const next = [...prev];
+              const last = next[next.length - 1];
+              if (last) next[next.length - 1] = { ...last, sources };
+              return next;
+            });
+          }
           setStatus('done');
         },
         onError: (streamError) => {
           abortRef.current = null;
+          setSearching(false);
           setThread((prev) => prev.slice(0, -1)); // drop the failed pending exchange
           setError(streamError);
           setStatus('error');
@@ -367,14 +384,22 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
               <div class="st-exchange" key={i}>
                 {exchange.question && <div class="st-q">{exchange.question}</div>}
                 {exchange.answer && <div class="st-answer">{exchange.answer}</div>}
+                {exchange.sources && exchange.sources.length > 0 && (
+                  <SourcesLine sources={exchange.sources} />
+                )}
               </div>
             ))}
 
-            {status === 'waiting' && (
-              <div class="st-pending" role="status" aria-label={t('popoverWaiting')}>
+            {(status === 'waiting' || searching) && (
+              <div
+                class="st-pending"
+                role="status"
+                aria-label={searching ? t('popoverSearching') : t('popoverWaiting')}
+              >
                 <span class="st-dot" />
                 <span class="st-dot" />
                 <span class="st-dot" />
+                {searching && <span class="st-searching">{t('popoverSearching')}</span>}
               </div>
             )}
 
@@ -415,6 +440,26 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
           )}
         </>
       )}
+    </div>
+  );
+}
+
+/** Cited pages as domain-name links (first MAX_SOURCES_SHOWN), each opening in a new tab. */
+function SourcesLine({ sources }: { sources: Source[] }) {
+  return (
+    <div class="st-sources">
+      <span class="st-sources-label">{t('popoverSources')}</span>
+      {sources.slice(0, MAX_SOURCES_SHOWN).map((source) => (
+        <a
+          key={source.url}
+          href={source.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={source.title || source.url}
+        >
+          {domainOf(source.url)}
+        </a>
+      ))}
     </div>
   );
 }

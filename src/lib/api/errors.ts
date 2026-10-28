@@ -14,6 +14,8 @@ export class ApiError extends Error {
   }
 }
 
+const WEB_SEARCH_REJECTED = /web[_ ]?search|tool[^.]{0,80}not (supported|enabled|available)/i;
+
 /** Map a non-2xx response from the Messages API to an ApiError. */
 export function apiErrorFromResponse(status: number, body: string): ApiError {
   const message = extractMessage(body) ?? t('errorRequestStatus', String(status));
@@ -21,6 +23,10 @@ export function apiErrorFromResponse(status: number, body: string): ApiError {
   if (status === 429) return new ApiError('rate_limit', message, status);
   if (status === 400 && /credit balance/i.test(body))
     return new ApiError('credit', message, status);
+  // The model, key or organization does not accept the web search tool (not a stream error:
+  // the request is rejected up front, so nothing was streamed).
+  if (status === 400 && WEB_SEARCH_REJECTED.test(body))
+    return new ApiError('unknown', t('errorWebSearchUnavailable'), status);
   if (status >= 500) return new ApiError('server', message, status);
   return new ApiError('unknown', message, status);
 }

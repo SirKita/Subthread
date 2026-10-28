@@ -54,6 +54,15 @@ describe('history store', () => {
     expect(await countAll()).toBe(2);
   });
 
+  it('round-trips the sources cited by an exchange', async () => {
+    const sources = [{ url: 'https://example.com/a', title: 'A' }];
+    await saveThread(
+      makeThread({ id: 't1', exchanges: [{ question: 'q', answer: 'a', sources }] }),
+    );
+    const [thread] = await listThreads('conv-a');
+    expect(thread!.exchanges[0]!.sources).toEqual(sources);
+  });
+
   it('deleteThread removes the thread and its index entry', async () => {
     await saveThread(makeThread({ id: 't1', updatedAt: 100 }));
     await saveThread(makeThread({ id: 't2', updatedAt: 200 }));

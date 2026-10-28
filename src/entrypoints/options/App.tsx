@@ -27,6 +27,7 @@ export function App() {
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState(DEFAULT_SETTINGS.model);
   const [maxContextTokens, setMaxContextTokens] = useState(8000);
+  const [webSearch, setWebSearch] = useState(DEFAULT_SETTINGS.webSearch);
   const [showKey, setShowKey] = useState(false);
   const [saved, setSaved] = useState(false);
   const [test, setTest] = useState<TestState>({ phase: 'idle' });
@@ -38,6 +39,7 @@ export function App() {
       setApiKey(s.apiKey);
       setModel(s.model);
       setMaxContextTokens(s.maxContextTokens);
+      setWebSearch(s.webSearch);
     });
     void countAll().then(setHistoryCount);
   }, []);
@@ -49,7 +51,7 @@ export function App() {
   }
 
   async function save() {
-    await setSettings({ apiKey: apiKey.trim(), model, maxContextTokens });
+    await setSettings({ apiKey: apiKey.trim(), model, maxContextTokens, webSearch });
     setSaved(true);
     window.setTimeout(() => setSaved(false), 2000);
   }
@@ -123,6 +125,18 @@ export function App() {
           {t('optionsContextTokens', contextTokens.toLocaleString(uiLanguage()))}
         </span>
         <span class="help">{t('optionsContextHelp')}</span>
+      </label>
+
+      <label>
+        <span class="check-line">
+          <input
+            type="checkbox"
+            checked={webSearch}
+            onInput={(e) => setWebSearch(e.currentTarget.checked)}
+          />
+          {t('optionsWebSearch')}
+        </span>
+        <span class="help">{t('optionsWebSearchHelp')}</span>
       </label>
 
       <div class="actions">

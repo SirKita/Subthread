@@ -1,3 +1,4 @@
+import type { Source } from '../api/claude-client';
 import type { ExtractedContext } from './adapter';
 
 /** Rough token estimate: chars / 3.5, rounded up (newer tokenizers are denser than chars/4). */
@@ -24,6 +25,8 @@ export function windowAround(text: string, anchor: string, maxChars: number): st
 export interface SideExchange {
   question?: string;
   answer: string;
+  /** Web pages the answer cited, when web search ran. Display only; never sent back. */
+  sources?: Source[];
 }
 
 export interface BudgetedRequest {

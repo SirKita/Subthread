@@ -1,11 +1,13 @@
-import type { StreamParams } from '../api/claude-client';
+import type { Source, StreamParams } from '../api/claude-client';
 import { t } from '../i18n';
 import { PORT_NAME } from './protocol';
 import type { AskMessage, BackgroundToContent, ErrorMessage } from './protocol';
 
 export interface StreamCallbacks {
   onDelta(text: string): void;
-  onDone(): void;
+  /** A web search started (may fire more than once); text deltas resume afterwards. */
+  onSearching?(): void;
+  onDone(sources: Source[]): void;
   onError(error: ErrorMessage['error']): void;
 }
 
@@ -27,10 +29,12 @@ export function streamAsk(
     if (settled || msg.requestId !== requestId) return;
     if (msg.type === 'delta') {
       callbacks.onDelta(msg.text);
+    } else if (msg.type === 'searching') {
+      callbacks.onSearching?.();
     } else if (msg.type === 'done') {
       settled = true;
       port.disconnect();
-      callbacks.onDone();
+      callbacks.onDone(msg.sources ?? []);
     } else {
       settled = true;
       port.disconnect();

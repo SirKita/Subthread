@@ -19,6 +19,8 @@
   "popoverCopied": { "message": "Kopiert" },
   "popoverCopyFailed": { "message": "Nicht kopiert" },
   "popoverOpenSettings": { "message": "Einstellungen" },
+  "popoverSearching": { "message": "Suche im Web …" },
+  "popoverSources": { "message": "Quellen" },
 
   "errorAuth": { "message": "API-Schlüssel fehlt oder ist ungültig" },
   "errorCredit": { "message": "Kein API-Guthaben mehr" },
@@ -33,6 +35,9 @@
   "errorRequestStatus": { "message": "Anfrage fehlgeschlagen (Status $1)" },
   "errorNoBody": { "message": "Antwort ohne Inhalt" },
   "errorStream": { "message": "Der Stream hat einen Fehler gemeldet" },
+  "errorWebSearchUnavailable": {
+    "message": "Websuche ist für dieses Modell oder diesen Schlüssel nicht verfügbar"
+  },
 
   "historyEmpty": { "message": "Noch keine Nebenfragen in dieser Unterhaltung." },
   "historyDelete": { "message": "Löschen" },
@@ -62,6 +67,10 @@
   "optionsContextTokens": { "message": "$1 Tokens" },
   "optionsContextHelp": {
     "message": "Wie viel von der Unterhaltung mit jeder Nebenfrage mitgeschickt wird. Mehr liefert bei langen Unterhaltungen bessere Antworten und kostet etwas mehr."
+  },
+  "optionsWebSearch": { "message": "Websuche für Nebenfragen erlauben" },
+  "optionsWebSearchHelp": {
+    "message": "Antworten können aktuelle Informationen enthalten, wenn die Frage das braucht. Jede Suche kostet mit deinem API-Schlüssel etwa einen Cent."
   },
   "optionsSave": { "message": "Speichern" },
   "optionsSaved": { "message": "Gespeichert" },

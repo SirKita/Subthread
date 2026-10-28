@@ -33,13 +33,21 @@ export async function handleAsk(
       system: msg.system,
       messages: msg.messages,
       maxTokens: msg.maxTokens,
+      webSearch: settings.webSearch,
       signal: controller.signal,
     });
     for await (const event of stream) {
       if (event.type === 'text') {
         post({ type: 'delta', requestId: msg.requestId, text: event.text });
+      } else if (event.type === 'searching') {
+        post({ type: 'searching', requestId: msg.requestId });
       } else {
-        post({ type: 'done', requestId: msg.requestId, usage: event.usage });
+        post({
+          type: 'done',
+          requestId: msg.requestId,
+          usage: event.usage,
+          sources: event.sources,
+        });
       }
     }
   } catch (err) {
@@ -71,6 +79,7 @@ export async function handleTestConnection(): Promise<TestConnectionResponse> {
       };
     }
     let sample = '';
+    // Deliberately no webSearch here: a connection test must never spend a search.
     const stream = streamMessage({
       apiKey: settings.apiKey,
       model: settings.model,

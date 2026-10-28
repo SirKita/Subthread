@@ -166,3 +166,16 @@ button.danger {
   border-color: #c0392b;
   color: white;
 }
+
+.check-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.check-line input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  padding: 0;
+}

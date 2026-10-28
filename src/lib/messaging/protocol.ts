@@ -1,4 +1,4 @@
-import type { StreamParams } from '../api/claude-client';
+import type { Source, StreamParams } from '../api/claude-client';
 import type { ApiErrorKind } from '../api/errors';
 
 /** Name of the long-lived port used for streaming answers. */
@@ -29,10 +29,18 @@ export interface DeltaMessage {
   text: string;
 }
 
+/** The model started a web search; may arrive more than once per answer. */
+export interface SearchingMessage {
+  type: 'searching';
+  requestId: string;
+}
+
 export interface DoneMessage {
   type: 'done';
   requestId: string;
   usage?: { input_tokens: number; output_tokens: number };
+  /** Cited web pages, unique by URL; absent or empty when nothing was searched. */
+  sources?: Source[];
 }
 
 export interface ErrorMessage {
@@ -41,7 +49,7 @@ export interface ErrorMessage {
   error: { kind: ApiErrorKind; message: string; status?: number };
 }
 
-export type BackgroundToContent = DeltaMessage | DoneMessage | ErrorMessage;
+export type BackgroundToContent = DeltaMessage | SearchingMessage | DoneMessage | ErrorMessage;
 
 // ---- One-shot runtime messages ----
 
