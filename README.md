@@ -50,6 +50,11 @@ Select text in a Claude response on claude.ai → **Explain** streams immediatel
 question first. Ask follow-ups in the same popover. The toolbar icon (or the ☰ button in the
 popover) opens the saved history for the current conversation.
 
+Answers may search the web when the question needs current or verifiable specifics (Anthropic's
+server-side web search, at most three searches per answer, about a cent each on your key); the
+popover shows "Searching the web…" meanwhile and a **Sources** line of cited domains under the
+answer. Turn it off with "Allow web search for side questions" in the settings.
+
 Dev helpers: `Ctrl/Cmd+Shift+D` with a selection copies a structure-only DOM dump (lengths, never
 text) for selector calibration; set `DEBUG = true` in `src/entrypoints/claude.content.ts` or
 `src/ui/input-guard.ts` for verbose logging with a `[subthread]` prefix.

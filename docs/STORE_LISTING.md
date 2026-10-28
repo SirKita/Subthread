@@ -57,7 +57,9 @@ Names match the manifest exactly (`permissions`, `host_permissions`, `content_sc
 
 - [ ] Developer account identity verification + one-time registration fee
 - [ ] Screenshots captured and uploaded
-- [ ] Data-use disclosures in the dashboard: "user activity" (highlighted text) is sent to
-      Anthropic via the user-provided key; no data sold or shared; no analytics
+- [ ] Data-use disclosures in the dashboard: "website content" (the highlighted text and nearby
+      conversation) and "personal communications" (the typed question) are sent to Anthropic via
+      the user-provided key; unchanged by web search (1.1.0), which runs on Anthropic's side from
+      the same data; no data sold or shared; no analytics
 - [ ] If the product name ever changes: update `src/lib/brand.ts`, `appName`/`appDescription` in
       every `public/_locales/*/messages.json`, and `docs/PRIVACY.md`

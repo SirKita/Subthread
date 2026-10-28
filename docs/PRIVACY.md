@@ -1,6 +1,6 @@
 # Subthread — Privacy
 
-Last updated: 2026-10-26
+Last updated: 2026-10-28
 
 ## The short version
 
@@ -21,6 +21,11 @@ When you press Explain or Ask, the extension sends one request to
 - your question, if you typed one,
 - your Anthropic API key, which authenticates the request.
 
+When web search is on (the default; you can turn it off in the extension's
+settings), your question and the relevant conversation context may be used by
+Anthropic's web search tool to query the web, and the answer then cites the
+pages it used.
+
 That is the only network destination the extension can talk to — the browser
 enforces this through the extension's permissions. Your use of the Anthropic
 API is governed by Anthropic's own privacy policy and terms.
@@ -30,9 +35,11 @@ API is governed by Anthropic's own privacy policy and terms.
 Stored in your browser's local extension storage, and nowhere else:
 
 - your Anthropic API key,
-- your settings (model choice, how much conversation context to send),
+- your settings (model choice, how much conversation context to send, whether
+  web search is allowed),
 - your subthread history: the highlighted phrases, short snippets of the
-  surrounding conversation, and the questions and answers from each thread.
+  surrounding conversation, the questions and answers from each thread, and
+  the web pages an answer cited.
 
 History is capped (at most 50 threads per conversation, 300 in total) and old
 entries are deleted automatically.
