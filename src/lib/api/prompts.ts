@@ -15,19 +15,29 @@ const FRAME =
 // Grounding block (Phase 5, verbatim from the brief): the conversation disambiguates, but
 // "not in the conversation" is not "unknown". Web search is governed by this prompt alone —
 // there is no code gate per mode; Explain only searches when the phrase itself needs it.
+// The two search sentences are included only while the webSearch setting is on, so a model
+// that was not offered the tool is never told to use it.
 const GROUNDING =
   'Use the conversation to interpret the phrase and the question. If the conversation does not ' +
   'settle the meaning, answer from your own knowledge — do not hedge, and do not tell the user ' +
-  'to verify something you already know. Use web search only when the answer depends on ' +
-  'current, recent, or verifiable specifics (news, prices, versions, named people or ' +
-  'organizations, dates, or claims you would otherwise be guessing at). When you search, keep ' +
-  'the answer as short as before and cite sources.';
+  'to verify something you already know.';
 
-const STYLE =
+const GROUNDING_SEARCH =
+  'Use web search only when the answer depends on current, recent, or verifiable specifics ' +
+  '(news, prices, versions, named people or organizations, dates, or claims you would ' +
+  'otherwise be guessing at). When you search, keep the answer as short as before and cite ' +
+  'sources.';
+
+const PROSE =
   'Write plain prose only: no headers, no bullet points, no markdown, no preamble, and do not ' +
-  'restate the phrase or refer to it as "the highlighted phrase" — just answer directly. ' +
-  `${GROUNDING} ` +
-  'Answer in the language the conversation is written in.';
+  'restate the phrase or refer to it as "the highlighted phrase" — just answer directly.';
+
+const LANGUAGE = 'Answer in the language the conversation is written in.';
+
+function style(webSearch: boolean): string {
+  const grounding = webSearch ? `${GROUNDING} ${GROUNDING_SEARCH}` : GROUNDING;
+  return `${PROSE} ${grounding} ${LANGUAGE}`;
+}
 
 const EXPLAIN_TASK =
   'Explain the highlighted phrase as it is used in this context, in 2–3 plain sentences. ' +
@@ -38,8 +48,9 @@ const ASK_TASK =
   "Answer the user's question about the highlighted phrase. Be concise: at most 5 sentences, " +
   'unless the question clearly needs more.';
 
-export function buildSystemPrompt(mode: Mode): string {
-  return `${FRAME} ${mode === 'explain' ? EXPLAIN_TASK : ASK_TASK} ${STYLE}`;
+/** System prompt for `mode`. `webSearch` mirrors the setting and gates the search sentences. */
+export function buildSystemPrompt(mode: Mode, webSearch: boolean): string {
+  return `${FRAME} ${mode === 'explain' ? EXPLAIN_TASK : ASK_TASK} ${style(webSearch)}`;
 }
 
 export function buildUserMessage(ctx: ExtractedContext, mode: Mode, question?: string): string {
@@ -90,13 +101,15 @@ function speakerLabel(turn: ConversationTurn): string {
  * (oldest first); `question` is the message being asked NOW. The first kept
  * exchange's question is embedded in the context message; later exchanges
  * alternate as plain user/assistant turns. Follow-ups use the ask system
- * prompt regardless of the opening mode.
+ * prompt regardless of the opening mode. `webSearch` mirrors the setting:
+ * when it is off, the prompt never mentions search.
  */
 export function buildRequest(
   ctx: ExtractedContext,
   mode: Mode,
   question: string | undefined,
   maxContextTokens: number,
+  webSearch: boolean,
   sideThread: SideExchange[] = [],
 ): {
   system: string;
@@ -128,7 +141,7 @@ export function buildRequest(
   }
 
   return {
-    system: buildSystemPrompt(sideThread.length > 0 ? 'ask' : mode),
+    system: buildSystemPrompt(sideThread.length > 0 ? 'ask' : mode, webSearch),
     messages,
     maxTokens: MAX_ANSWER_TOKENS,
   };

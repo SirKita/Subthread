@@ -78,6 +78,8 @@ export interface GetConfigRequest {
 export interface ExtensionConfig {
   model: string;
   maxContextTokens: number;
+  /** Mirrors the setting so the content script builds the prompt with or without search. */
+  webSearch: boolean;
 }
 
 export function sendTestConnection(): Promise<TestConnectionResponse> {

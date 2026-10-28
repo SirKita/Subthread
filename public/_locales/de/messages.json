@@ -21,6 +21,7 @@
   "popoverOpenSettings": { "message": "Einstellungen" },
   "popoverSearching": { "message": "Suche im Web …" },
   "popoverSources": { "message": "Quellen" },
+  "popoverSourcesMore": { "message": "+$1 weitere" },
 
   "errorAuth": { "message": "API-Schlüssel fehlt oder ist ungültig" },
   "errorCredit": { "message": "Kein API-Guthaben mehr" },

@@ -32,15 +32,13 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
 - `src/entrypoints/options/` — settings page: key, model, context slider, web search, clear history.
 - `src/lib/api/` — `claude-client.ts` (fetch + SSE stream, web search tool, citations → sources),
   `sse.ts` (parser), `errors.ts` (`ApiError` kinds), `prompts.ts` (system/user prompts, `buildRequest`).
-- `src/lib/context/` — `adapter.ts` (types), `claude-ai.ts` (structured DOM adapter,
-  `CLAUDE_AI_SELECTORS`), `naive.ts` (last-resort fallback), `budget.ts` (token estimate and
-  trimming order), `dump.ts` (structure-only DOM dump).
+- `src/lib/context/` — `adapter.ts` (types), `claude-ai.ts` (DOM adapter, `CLAUDE_AI_SELECTORS`),
+  `naive.ts` (fallback), `budget.ts` (token estimate, trimming order), `dump.ts` (structure dump).
 - `src/lib/messaging/` — `protocol.ts` (message types, port name), `port.ts` (content-side
   stream client), `handlers.ts` (background-side handlers).
 - `src/lib/storage/settings.ts` — settings (key, model, context level, `webSearch`) and context
   levels. `src/lib/history/store.ts` — saved threads, 50 per conversation, 300 total.
-- `src/lib/brand.ts` — source of the product name; `appName`/`appDescription` in `_locales/en` must
-  equal it (`i18n.test.ts` enforces).
+- `src/lib/brand.ts` — product name; `_locales/en` `appName`/`appDescription` must match (tested).
 - `src/ui/` — `App.tsx` (selection → toolbar → popover orchestration), `Toolbar.tsx`,
   `Popover.tsx` (streaming, follow-ups, sources line, drag, history view), `HistoryList.tsx`,
   `sources.ts`, `input-guard.ts`, `dom.ts` (shadow-DOM event helpers), `position.ts`, `styles.css`.
@@ -64,12 +62,14 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
   2026-10; if Test connection returns a model-not-found error, updating them is correct.
 - **Web search is prompt-governed; no code gate per mode (deliberate).** With `webSearch` on
   (default), every side question offers `WEB_SEARCH_TOOL` (`web_search_20250305`, `max_uses: 3`),
-  Explain included; Test connection never does. The `GROUNDING` block in `prompts.ts` (verbatim
-  from the Phase 5 brief, in both prompts) decides: search only for current, recent or verifiable
-  specifics, so Explain searches only when the phrase needs it; "not in the conversation" is
-  answered from the model's own knowledge, no hedging. A code gate would have to guess what a
-  phrase needs. The basic tool version is deliberate: `_20260209`/`_20260318` route searches
-  through code execution (slower, needs programmatic tool calling, not ZDR-eligible).
+  Explain included; Test connection never does. The `GROUNDING` block in `prompts.ts` (verbatim,
+  Phase 5 brief) decides: search only for current, recent or verifiable specifics, so Explain
+  searches only when the phrase needs it (a code gate would have to guess); "not in the
+  conversation" is answered from the model's own knowledge, no hedging. Setting off:
+  `buildSystemPrompt(mode, false)` drops the two search sentences (`get-config` carries the flag),
+  so the model is never told to use a tool it lacks. Basic tool version on purpose:
+  `_20260209`/`_20260318` route searches through code execution (slower, needs programmatic tool
+  calling, no ZDR).
 - **Stream events (`claude-client.ts`).** `text_delta` → `text`; `content_block_start` of a
   `server_tool_use` → `searching`; `citations_delta` (or `citations` on a text block start) →
   `{ url, title }`, unique by URL, as `sources` on `done`. `web_search_tool_result` (results or an

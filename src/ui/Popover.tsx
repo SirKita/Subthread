@@ -15,7 +15,7 @@ import { eventTargetElement, isEditableTarget, isWithin } from './dom';
 import { HistoryList } from './HistoryList';
 import { installInputGuard } from './input-guard';
 import { clampToViewport } from './position';
-import { domainOf, MAX_SOURCES_SHOWN } from './sources';
+import { domainOf, visibleSources } from './sources';
 import type { AnchorRect } from './types';
 
 const MARGIN = 12;
@@ -76,7 +76,14 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
     setThread([...completed, { question: askQuestion, answer: '' }]);
     try {
       const config = await sendGetConfig();
-      const request = buildRequest(ctx, mode, askQuestion, config.maxContextTokens, completed);
+      const request = buildRequest(
+        ctx,
+        mode,
+        askQuestion,
+        config.maxContextTokens,
+        config.webSearch,
+        completed,
+      );
       abortRef.current = streamAsk(request, {
         onDelta: (text) => {
           setSearching(false);
@@ -444,12 +451,17 @@ export function Popover({ mode: initialMode, ctx: initialCtx, rect, initialView,
   );
 }
 
-/** Cited pages as domain-name links (first MAX_SOURCES_SHOWN), each opening in a new tab. */
+/**
+ * Cited pages as domain-name links, each opening in a new tab. The first MAX_SOURCES_SHOWN are
+ * listed; a "+N more" control reveals the rest.
+ */
 function SourcesLine({ sources }: { sources: Source[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const { shown, hidden } = visibleSources(sources, expanded);
   return (
     <div class="st-sources">
       <span class="st-sources-label">{t('popoverSources')}</span>
-      {sources.slice(0, MAX_SOURCES_SHOWN).map((source) => (
+      {shown.map((source) => (
         <a
           key={source.url}
           href={source.url}
@@ -460,6 +472,11 @@ function SourcesLine({ sources }: { sources: Source[] }) {
           {domainOf(source.url)}
         </a>
       ))}
+      {hidden > 0 && (
+        <button type="button" class="st-sources-more" onClick={() => setExpanded(true)}>
+          {t('popoverSourcesMore', String(hidden))}
+        </button>
+      )}
     </div>
   );
 }

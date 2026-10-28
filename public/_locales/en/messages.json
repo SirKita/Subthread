@@ -73,6 +73,10 @@
     "message": "Sources",
     "description": "Label before the cited web pages (shown as domain-name links) under an answer that used web search. Keep short."
   },
+  "popoverSourcesMore": {
+    "message": "+$1 more",
+    "description": "Control after the first three cited domains that reveals the rest. $1 is the number of hidden sources, always 1 or more. Keep very short."
+  },
 
   "errorAuth": {
     "message": "API key missing or invalid",

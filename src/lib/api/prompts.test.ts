@@ -17,8 +17,8 @@ function makeCtx(overrides: Partial<ExtractedContext> = {}): ExtractedContext {
 
 describe('buildSystemPrompt', () => {
   it('produces distinct prompts per mode with the shared style rules', () => {
-    const explain = buildSystemPrompt('explain');
-    const ask = buildSystemPrompt('ask');
+    const explain = buildSystemPrompt('explain', true);
+    const ask = buildSystemPrompt('ask', true);
     expect(explain).toContain('2–3 plain sentences');
     expect(ask).toContain('at most 5 sentences');
     expect(explain).not.toBe(ask);
@@ -40,11 +40,28 @@ describe('buildSystemPrompt', () => {
       'organizations, dates, or claims you would otherwise be guessing at). When you search, keep ' +
       'the answer as short as before and cite sources.';
     for (const mode of ['explain', 'ask'] as const) {
-      const prompt = buildSystemPrompt(mode);
+      const prompt = buildSystemPrompt(mode, true);
       expect(prompt).toContain(block);
       // The Phase 2 hedge is gone: the block above supersedes it.
       expect(prompt).not.toContain('the context did not specify');
       expect(prompt).not.toContain('most common reading');
+    }
+  });
+
+  it('omits the web search sentences when web search is off, changing nothing else', () => {
+    const searchSentences =
+      ' Use web search only when the answer depends on current, recent, or verifiable specifics ' +
+      '(news, prices, versions, named people or organizations, dates, or claims you would ' +
+      'otherwise be guessing at). When you search, keep the answer as short as before and cite ' +
+      'sources.';
+    for (const mode of ['explain', 'ask'] as const) {
+      const on = buildSystemPrompt(mode, true);
+      const off = buildSystemPrompt(mode, false);
+      expect(on).toContain(searchSentences);
+      expect(off).toBe(on.replace(searchSentences, ''));
+      expect(off).not.toMatch(/search|sources/i);
+      expect(off).toContain('answer from your own knowledge — do not hedge');
+      expect(off).toContain('Answer in the language the conversation is written in.');
     }
   });
 });
@@ -134,14 +151,14 @@ describe('buildRequest', () => {
         text: 'a'.repeat(50_000) + ' quantum tunneling ' + 'b'.repeat(50_000),
       },
     });
-    const request = buildRequest(hugeCtx, 'explain', undefined, 200);
+    const request = buildRequest(hugeCtx, 'explain', undefined, 200, true);
     expect(request.messages[0]!.content.length).toBeLessThan(2000);
     expect(request.messages[0]!.content).toContain('quantum tunneling');
   });
 
   it('returns the mode system prompt and the fixed answer budget', () => {
-    const request = buildRequest(makeCtx(), 'ask', 'why?', 8000);
-    expect(request.system).toBe(buildSystemPrompt('ask'));
+    const request = buildRequest(makeCtx(), 'ask', 'why?', 8000, true);
+    expect(request.system).toBe(buildSystemPrompt('ask', true));
     expect(request.maxTokens).toBe(MAX_ANSWER_TOKENS);
     expect(request.messages).toHaveLength(1);
     expect(request.messages[0]!.role).toBe('user');
@@ -154,6 +171,7 @@ describe('buildRequest', () => {
       'explain',
       'And why does the barrier width matter?',
       8000,
+      true,
       [
         { question: undefined, answer: 'It means particles cross energy barriers.' },
         { question: 'Is that common?', answer: 'Yes, in alpha decay for example.' },
@@ -176,14 +194,14 @@ describe('buildRequest', () => {
     expect(request.messages[2]!.content).toBe('Is that common?');
     expect(request.messages[4]!.content).toBe('And why does the barrier width matter?');
     // Follow-ups answer questions, so the ask system prompt applies.
-    expect(request.system).toBe(buildSystemPrompt('ask'));
+    expect(request.system).toBe(buildSystemPrompt('ask', true));
   });
 
   it('re-anchors on the oldest kept exchange when the budget drops early ones', () => {
     // Context ~23 tokens; each exchange ~40 tokens. Budget 80 forces the
     // first exchange out; the second's question becomes the context message's
     // instruction and its answer follows.
-    const request = buildRequest(makeCtx(), 'ask', 'current question?', 80, [
+    const request = buildRequest(makeCtx(), 'ask', 'current question?', 80, true, [
       { question: 'first question, dropped', answer: 'f'.repeat(105) },
       { question: 'second question, kept', answer: 's'.repeat(35) },
     ]);
@@ -196,23 +214,34 @@ describe('buildRequest', () => {
   });
 
   it('marks dropped follow-ups at the start of the first kept user message', () => {
-    const dropped = buildRequest(makeCtx(), 'ask', 'current question?', 80, [
+    const dropped = buildRequest(makeCtx(), 'ask', 'current question?', 80, true, [
       { question: 'first question, dropped', answer: 'f'.repeat(105) },
       { question: 'second question, kept', answer: 's'.repeat(35) },
     ]);
     expect(dropped.messages[0]!.content.startsWith('[earlier follow-ups omitted]')).toBe(true);
 
     // Even when every exchange is dropped, the context message carries the marker.
-    const allDropped = buildRequest(makeCtx(), 'ask', 'current question?', 40, [
+    const allDropped = buildRequest(makeCtx(), 'ask', 'current question?', 40, true, [
       { question: 'only exchange', answer: 'x'.repeat(350) },
     ]);
     expect(allDropped.messages).toHaveLength(1);
     expect(allDropped.messages[0]!.content.startsWith('[earlier follow-ups omitted]')).toBe(true);
 
     // No marker when nothing was dropped.
-    const kept = buildRequest(makeCtx(), 'ask', 'current question?', 8000, [
+    const kept = buildRequest(makeCtx(), 'ask', 'current question?', 8000, true, [
       { question: 'kept question', answer: 'kept answer' },
     ]);
     expect(kept.messages[0]!.content).not.toContain('[earlier follow-ups omitted]');
+  });
+
+  it('threads the web search setting into the system prompt, for follow-ups too', () => {
+    const first = buildRequest(makeCtx(), 'explain', undefined, 8000, false);
+    expect(first.system).toBe(buildSystemPrompt('explain', false));
+    expect(first.system).not.toContain('web search');
+
+    const followUp = buildRequest(makeCtx(), 'explain', 'and why?', 8000, false, [
+      { question: undefined, answer: 'An answer.' },
+    ]);
+    expect(followUp.system).toBe(buildSystemPrompt('ask', false));
   });
 });

@@ -65,7 +65,11 @@ export async function handleAsk(
 /** Return the non-secret settings the content script needs. Never includes the API key. */
 export async function handleGetConfig(): Promise<ExtensionConfig> {
   const settings = await getSettings();
-  return { model: settings.model, maxContextTokens: settings.maxContextTokens };
+  return {
+    model: settings.model,
+    maxContextTokens: settings.maxContextTokens,
+    webSearch: settings.webSearch,
+  };
 }
 
 /** Run the options-page "Test connection" round trip against the API. */

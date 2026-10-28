@@ -384,17 +384,30 @@
   content: ':';
 }
 
-.st-sources a {
+.st-sources a,
+.st-sources-more {
   color: inherit;
   text-decoration: underline;
   text-decoration-color: rgba(0, 0, 0, 0.3);
 }
 
-.st-sources a:hover {
+.st-sources a:hover,
+.st-sources-more:hover {
   text-decoration-color: currentColor;
 }
 
-.st-sources a + a::before {
+/* "+N more": a link-styled button that reveals the hidden sources. */
+.st-sources-more {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  user-select: none;
+}
+
+.st-sources a + a::before,
+.st-sources a + .st-sources-more::before {
   content: '·';
   margin: 0 6px;
   text-decoration: none;
@@ -402,7 +415,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .st-sources a {
+  .st-sources a,
+  .st-sources-more {
     text-decoration-color: rgba(255, 255, 255, 0.35);
   }
 }

@@ -144,9 +144,9 @@ describe('handleTestConnection', () => {
 
 describe('handleGetConfig', () => {
   it('returns non-secret settings only', async () => {
-    await setSettings({ apiKey: 'sk-ant-secret', maxContextTokens: 4000 });
+    await setSettings({ apiKey: 'sk-ant-secret', maxContextTokens: 4000, webSearch: false });
     const config = await handleGetConfig();
-    expect(config).toEqual({ model: 'claude-haiku-5-5', maxContextTokens: 4000 });
+    expect(config).toEqual({ model: 'claude-haiku-5-5', maxContextTokens: 4000, webSearch: false });
     expect(JSON.stringify(config)).not.toContain('sk-ant');
   });
 });
