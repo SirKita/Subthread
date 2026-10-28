@@ -266,3 +266,97 @@ describe('streamMessage with web search', () => {
     expect((error as ApiError).message).toBe("Web search isn't available for this model or key");
   });
 });
+
+describe('web search safeguards', () => {
+  const START = {
+    type: 'message_start',
+    message: { usage: { input_tokens: 9, output_tokens: 1 } },
+  };
+  const STOP = [
+    { type: 'message_delta', delta: { stop_reason: 'end_turn' }, usage: { output_tokens: 4 } },
+    { type: 'message_stop' },
+  ];
+  const search = (index: number) => [
+    {
+      type: 'content_block_start',
+      index,
+      content_block: { type: 'server_tool_use', id: `srvtoolu_${index}`, name: 'web_search' },
+    },
+    { type: 'content_block_delta', index, delta: { type: 'input_json_delta', partial_json: '{}' } },
+    { type: 'content_block_stop', index },
+  ];
+
+  it('completes with the text it has when a search fails (max_uses_exceeded)', async () => {
+    stubFetch([
+      START,
+      ...search(0),
+      {
+        type: 'content_block_start',
+        index: 1,
+        content_block: {
+          type: 'web_search_tool_result',
+          tool_use_id: 'srvtoolu_0',
+          content: { type: 'web_search_tool_result_error', error_code: 'max_uses_exceeded' },
+        },
+      },
+      { type: 'content_block_stop', index: 1 },
+      { type: 'content_block_start', index: 2, content_block: { type: 'text', text: '' } },
+      {
+        type: 'content_block_delta',
+        index: 2,
+        delta: { type: 'text_delta', text: 'As of my knowledge, 1916.' },
+      },
+      { type: 'content_block_stop', index: 2 },
+      ...STOP,
+    ]);
+
+    const events = await collect(params({ webSearch: true }));
+    expect(events).toEqual([
+      { type: 'searching' },
+      { type: 'text', text: 'As of my knowledge, 1916.' },
+      { type: 'done', usage: { input_tokens: 9, output_tokens: 4 }, sources: [] },
+    ]);
+  });
+
+  it('ignores unknown event, block and delta types instead of throwing', async () => {
+    stubFetch([
+      START,
+      { type: 'future_event', payload: { anything: true } },
+      { type: 'content_block_start', index: 0, content_block: { type: 'future_block', data: 1 } },
+      { type: 'content_block_delta', index: 0, delta: { type: 'future_delta', value: 'x' } },
+      { type: 'content_block_stop', index: 0 },
+      { type: 'content_block_start', index: 1, content_block: { type: 'text', text: '' } },
+      { type: 'content_block_delta', index: 1, delta: { type: 'text_delta', text: 'Fine.' } },
+      { type: 'content_block_delta', index: 1, delta: { type: 'citations_delta', citation: null } },
+      {
+        type: 'content_block_delta',
+        index: 1,
+        delta: { type: 'citations_delta', citation: { type: 'char_location' } },
+      },
+      { type: 'content_block_stop', index: 1 },
+      ...STOP,
+    ]);
+
+    const events = await collect(params({ webSearch: true }));
+    expect(events).toEqual([
+      { type: 'text', text: 'Fine.' },
+      { type: 'done', usage: { input_tokens: 9, output_tokens: 4 }, sources: [] },
+    ]);
+  });
+
+  it('still yields done when the connection ends before message_stop', async () => {
+    stubFetch([
+      START,
+      ...search(0),
+      { type: 'content_block_start', index: 1, content_block: { type: 'text', text: '' } },
+      { type: 'content_block_delta', index: 1, delta: { type: 'text_delta', text: 'Partial' } },
+    ]);
+
+    const events = await collect(params({ webSearch: true }));
+    expect(events).toEqual([
+      { type: 'searching' },
+      { type: 'text', text: 'Partial' },
+      { type: 'done', usage: { input_tokens: 9, output_tokens: 1 }, sources: [] },
+    ]);
+  });
+});

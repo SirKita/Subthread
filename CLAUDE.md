@@ -29,66 +29,73 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
 - `src/entrypoints/background.ts` — service worker: streaming port, one-shot messages, action click.
 - `src/entrypoints/claude.content.ts` — content script on `https://claude.ai/*`: mounts the
   shadow-root UI; Ctrl/Cmd+Shift+D structure dump hotkey.
-- `src/entrypoints/options/` — settings page: API key, model, context slider, clear history.
-- `src/lib/api/` — `claude-client.ts` (fetch + SSE stream), `sse.ts` (parser), `errors.ts`
-  (`ApiError` kinds), `prompts.ts` (system/user prompts, `buildRequest`).
+- `src/entrypoints/options/` — settings page: key, model, context slider, web search, clear history.
+- `src/lib/api/` — `claude-client.ts` (fetch + SSE stream, web search tool, citations → sources),
+  `sse.ts` (parser), `errors.ts` (`ApiError` kinds), `prompts.ts` (system/user prompts, `buildRequest`).
 - `src/lib/context/` — `adapter.ts` (types), `claude-ai.ts` (structured DOM adapter,
   `CLAUDE_AI_SELECTORS`), `naive.ts` (last-resort fallback), `budget.ts` (token estimate and
   trimming order), `dump.ts` (structure-only DOM dump).
 - `src/lib/messaging/` — `protocol.ts` (message types, port name), `port.ts` (content-side
   stream client), `handlers.ts` (background-side handlers).
-- `src/lib/storage/settings.ts` — settings and context levels. `src/lib/history/store.ts` —
-  saved threads, 50 per conversation, 300 total.
+- `src/lib/storage/settings.ts` — settings (key, model, context level, `webSearch`) and context
+  levels. `src/lib/history/store.ts` — saved threads, 50 per conversation, 300 total.
 - `src/lib/brand.ts` — source of the product name; `appName`/`appDescription` in `_locales/en` must
   equal it (`i18n.test.ts` enforces).
 - `src/ui/` — `App.tsx` (selection → toolbar → popover orchestration), `Toolbar.tsx`,
-  `Popover.tsx` (streaming, follow-ups, drag, history view), `HistoryList.tsx`,
-  `input-guard.ts`, `dom.ts` (shadow-DOM event helpers), `position.ts`, `styles.css`.
+  `Popover.tsx` (streaming, follow-ups, sources line, drag, history view), `HistoryList.tsx`,
+  `sources.ts`, `input-guard.ts`, `dom.ts` (shadow-DOM event helpers), `position.ts`, `styles.css`.
 - `tests/setup.ts` — in-memory `chrome` fake for Vitest; `*.test.ts` files sit beside modules.
 - `docs/dom-docs/` — real claude.ai DOM structure dumps (2026-10-21). Ground truth for every
   selector in `claude-ai.ts`: recalibrate from a fresh dump, never from guesses.
-- `docs/PRIVACY.md`, `docs/STORE_LISTING.md` — store-facing docs. `scripts/icons.mjs` renders
-  `public/icon/source.svg` to the manifest PNGs.
+- `docs/PRIVACY.md`, `docs/STORE_LISTING.md` — store-facing docs; `scripts/icons.mjs` renders the PNGs.
 
 ## Non-obvious decisions (and why)
 
-- **No Anthropic SDK.** `claude-client.ts` is a hand-rolled `fetch` plus SSE parser. One
-  streaming endpoint is all we need; the SDK would add bundle weight and a dependency inside a
-  service worker for no gain.
+- **No Anthropic SDK.** `claude-client.ts` is a hand-rolled `fetch` plus SSE parser: one streaming
+  endpoint is all we need, and the SDK would add bundle weight inside a service worker for no gain.
 - **`anthropic-dangerous-direct-browser-access: true` header.** The service worker sends a
-  `chrome-extension://` Origin, which the API treats as a browser request and rejects without
-  this header. Safe here because the key is the user's own (BYOK), stored only in
-  `chrome.storage.local`, sent only to `api.anthropic.com`. There is no shared or embedded key.
-- **`output_config: { effort: 'low' }`.** Side answers must be fast and cheap. No
-  `temperature`/`top_p`/`top_k` (current models reject them) and no `thinking` field.
+  `chrome-extension://` Origin, which the API treats as a browser request and rejects without it.
+  Safe here: BYOK, the user's own key, stored only in `chrome.storage.local`, sent only to
+  `api.anthropic.com`; there is no shared or embedded key.
+- **`output_config: { effort: 'low' }`, no sampling params, no `thinking` field.** Side answers
+  must be fast and cheap; current models reject `temperature`/`top_p`/`top_k`.
 - **Model IDs `claude-haiku-5-5` (default) and `claude-sonnet-5-5` are real.** They were
   released after most training data. Do not "correct" them to older names. Current as of
   2026-10; if Test connection returns a model-not-found error, updating them is correct.
-- **Window-capture input guard (`input-guard.ts`).** claude.ai has document-level keyboard and
-  clipboard handlers that redirect input to its composer when `document.activeElement` is our
-  shadow host. The guard listens at window capture, ahead of any page listener, and calls
-  `stopPropagation` (not `preventDefault`) while focus is inside our shadow root: the page never
-  sees the event, but default actions (typing, paste, cut, copy, IME) still happen in our input.
-  Only Enter (submit) and Escape (close) are owned. Consequence: events never reach our own
-  elements either, so the Ask input is uncontrolled and its value is read through a ref.
+- **Web search is prompt-governed; no code gate per mode (deliberate).** With `webSearch` on
+  (default), every side question offers `WEB_SEARCH_TOOL` (`web_search_20250305`, `max_uses: 3`),
+  Explain included; Test connection never does. The `GROUNDING` block in `prompts.ts` (verbatim
+  from the Phase 5 brief, in both prompts) decides: search only for current, recent or verifiable
+  specifics, so Explain searches only when the phrase needs it; "not in the conversation" is
+  answered from the model's own knowledge, no hedging. A code gate would have to guess what a
+  phrase needs. The basic tool version is deliberate: `_20260209`/`_20260318` route searches
+  through code execution (slower, needs programmatic tool calling, not ZDR-eligible).
+- **Stream events (`claude-client.ts`).** `text_delta` → `text`; `content_block_start` of a
+  `server_tool_use` → `searching`; `citations_delta` (or `citations` on a text block start) →
+  `{ url, title }`, unique by URL, as `sources` on `done`. `web_search_tool_result` (results or an
+  error such as `max_uses_exceeded`), `input_json_delta`, thinking and unknown event/block/delta
+  types are ignored, never thrown on; EOF without `message_stop` still yields `done`. Sources are
+  display-only: follow-ups send plain-text assistant turns, never the search blocks back.
+- **Window-capture input guard (`input-guard.ts`).** claude.ai's document-level key/clipboard
+  handlers redirect input to its composer when `document.activeElement` is our shadow host. The
+  guard listens at window capture and calls `stopPropagation` (not `preventDefault`) while focus
+  is inside our shadow root: the page never sees the event, default actions still happen. Only
+  Enter (submit) and Escape (close) are owned; the Ask input is uncontrolled, read through a ref.
 - **`closest()` order in `findRow`.** `[data-transcript-row]` is an inner wrapper nested inside
-  the real `[data-testid="transcript-row"]`. The primary selector must be tried on the whole
-  ancestor chain before any fallback; interleaving per ancestor would match the inner wrapper
-  and lose `data-index` and `data-perf-row`.
+  the real `[data-testid="transcript-row"]`. Try the primary selector on the whole ancestor chain
+  before any fallback; interleaving per ancestor matches the inner wrapper and loses `data-index`.
 - **The transcript is virtualized.** Only rows near the viewport exist in the DOM, by design.
   `position.earliestRenderedIndex` records the gap and the prompt adds "[earlier turns exist
   but are not shown]". Do not scroll or force-render rows to get more context.
 - **Mousedown guards decide via `composedPath()[0]`.** Inside a shadow root `event.target` is
   retargeted to the host, so `eventTargetElement` in `dom.ts` reads the real target. Popover
   and toolbar `preventDefault` on mousedown to keep the page selection alive, but never on
-  editable targets or on text selection inside the thread body.
+  editable targets or on text selection inside the thread body (where the source links live).
 - **Follow-ups switch to the ask prompt.** `buildRequest` uses the `ask` system prompt whenever
   the side thread is non-empty, even if the popover opened in Explain mode. The first exchange
   is embedded in the context message; later exchanges alternate as user/assistant turns.
-- **`MessageKey` is `keyof` a typed JSON import** of `_locales/en/messages.json`, so a typo fails
-  typecheck with no generator to keep in sync. `t()` returns English when `chrome.i18n` has no
-  message for the key, or when there is no `chrome.i18n` at all (unit tests). Relative times are
-  plural-safe by construction: unit abbreviations, a separate "yesterday", days only for 2+.
+- **`MessageKey` is `keyof` a typed JSON import** of `_locales/en/messages.json`: a typo fails
+  typecheck, no generator. `t()` falls back to English when `chrome.i18n` lacks the key or is absent.
 
 ## Workflow
 
@@ -98,14 +105,12 @@ follow-ups stay in the popover and threads are saved to a local, per-conversatio
 - No user-visible string literals in `src/`: add the string to `public/_locales/en/messages.json`
   (with a translator description) and use `t()`. Every locale file must carry the full key set;
   `i18n.test.ts` fails otherwise. Prompts in `prompts.ts` are not UI strings and stay English.
-- Git tags `phase-0` … `phase-4` mark accepted states. A tag may be moved only for a hotfix to
+- Git tags `phase-0` … `phase-5` mark accepted states. A tag may be moved only for a hotfix to
   that same phase before the next phase starts; after that it is frozen.
-- Status reports go to the CTO with these sections in order: files changed (one line each);
-  new/changed exported signatures; test results; deviations from the brief and why;
-  unsure/guessed — be specific; dependencies wanted but not added; plus anything the brief asked
-  to see verbatim.
-- Dev loop: `pnpm dev` (temp profile, hot reload) or `pnpm build` then load `.output/chrome-mv3`
-  unpacked.
+- Status reports go to the CTO, sections in order: files changed (one line each); new/changed
+  exported signatures; test results; deviations from the brief and why; unsure/guessed (be
+  specific); dependencies wanted but not added; plus anything the brief asked to see verbatim.
+- Dev loop: `pnpm dev` (temp profile, hot reload), or `pnpm build` and load `.output/chrome-mv3` unpacked.
 
 ## Known deferred items
 
