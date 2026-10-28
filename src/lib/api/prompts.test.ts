@@ -27,7 +27,24 @@ describe('buildSystemPrompt', () => {
       expect(prompt).toContain('without derailing the main conversation');
       expect(prompt).toContain("a message in the conversation (usually the assistant's)");
       expect(prompt).toContain('Answer in the language the conversation is written in.');
-      expect(prompt).toContain('the context did not specify');
+      expect(prompt).toContain('do not restate the phrase');
+    }
+  });
+
+  it('grounds in the conversation, answers from knowledge, and searches only for specifics', () => {
+    const block =
+      'Use the conversation to interpret the phrase and the question. If the conversation does not ' +
+      'settle the meaning, answer from your own knowledge — do not hedge, and do not tell the user ' +
+      'to verify something you already know. Use web search only when the answer depends on ' +
+      'current, recent, or verifiable specifics (news, prices, versions, named people or ' +
+      'organizations, dates, or claims you would otherwise be guessing at). When you search, keep ' +
+      'the answer as short as before and cite sources.';
+    for (const mode of ['explain', 'ask'] as const) {
+      const prompt = buildSystemPrompt(mode);
+      expect(prompt).toContain(block);
+      // The Phase 2 hedge is gone: the block above supersedes it.
+      expect(prompt).not.toContain('the context did not specify');
+      expect(prompt).not.toContain('most common reading');
     }
   });
 });

@@ -12,12 +12,21 @@ const FRAME =
   "The user is reading a message in the conversation (usually the assistant's) and has " +
   'highlighted a phrase in it; they want a quick side answer without derailing the main conversation.';
 
+// Grounding block (Phase 5, verbatim from the brief): the conversation disambiguates, but
+// "not in the conversation" is not "unknown". Web search is governed by this prompt alone —
+// there is no code gate per mode; Explain only searches when the phrase itself needs it.
+const GROUNDING =
+  'Use the conversation to interpret the phrase and the question. If the conversation does not ' +
+  'settle the meaning, answer from your own knowledge — do not hedge, and do not tell the user ' +
+  'to verify something you already know. Use web search only when the answer depends on ' +
+  'current, recent, or verifiable specifics (news, prices, versions, named people or ' +
+  'organizations, dates, or claims you would otherwise be guessing at). When you search, keep ' +
+  'the answer as short as before and cite sources.';
+
 const STYLE =
   'Write plain prose only: no headers, no bullet points, no markdown, no preamble, and do not ' +
   'restate the phrase or refer to it as "the highlighted phrase" — just answer directly. ' +
-  'Use the conversation context to ground your answer; if the phrase is ambiguous, pick the ' +
-  'reading the context supports. If the context does not settle what the phrase means, give ' +
-  'the most common reading and say in a few words that the context did not specify. ' +
+  `${GROUNDING} ` +
   'Answer in the language the conversation is written in.';
 
 const EXPLAIN_TASK =
